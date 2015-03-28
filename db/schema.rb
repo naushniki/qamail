@@ -14,7 +14,9 @@ ActiveRecord::Schema.define(version: 20150328010000) do
   create_table "letters", force: true do |t|
   t.integer "mailbox_id"
   t.text "raw"
-  t.datetime "writen_at"
+  t.datetime "written_at"
+  t.string "from"
+  t.string "subject"
   end
   
 end
