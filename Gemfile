@@ -1,0 +1,7 @@
+source 'https://rubygems.org'
+gem 'sinatra', '~>1.4.6'
+gem 'sinatra-activerecord', '~>2.0.5'
+gem 'pg', '>=0.18.1'
+gem 'puma'
+gem 'rake'
+gem 'mailman', '~>0.7.3'
