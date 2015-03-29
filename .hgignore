@@ -1,2 +1,5 @@
+syntax: glob
+log/**
 settings.yml
 Gemfile.lock
+letter_import.pid
