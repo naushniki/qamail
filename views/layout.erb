@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+<script language="javascript" type="text/javascript">
+  function resizeIframe(obj) {
+    obj.style.height = obj.contentWindow.document.body.scrollHeight + 'px';
+    obj.style.width = obj.contentWindow.document.body.scrollWidth + 'px';
+  }
+</script>
+
+<style>
+.list_table {
+    border-collapse: collapse;
+    width:100%;
+}
+
+.list_table td.shrink {
+    white-space:nowrap
+}
+.list_table td.expand {
+    width: 99%
+}
+td a {
+    display:block;
+    width:100%;
+}
+</style>
+
+
+
+<head>
+  <title>QA Mail</title>
+
+
+</head>
+<body>
+
+<%= yield %>
+
+</body>
+</html>
