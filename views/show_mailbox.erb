@@ -1,0 +1,25 @@
+<center>
+<table border=5 class="mailbox_table">
+
+<td width="40%">
+<table>
+<tr>
+<th>Subject</th>
+<th>From</th>
+<th>Date</th>
+</tr>
+<% @letters.each do |letter| %>
+  <tr>
+  <td><a target = "letter" href="/show_letter?id=<%= letter.id%>&session_key=<%= @session_key%>"><%= letter.subject %></a></td>
+  <td><%= letter.from %></td>
+  <td><%= letter.written_at %></td>
+  </tr>
+<% end %>
+</tr>
+</table>
+</td>
+<td>
+<iframe id="current_letter" name="letter" frameBorder="0" seamless=yes scrolling=no src="" onLoad="resizeIframe(this);"></iframe> 
+</td>
+</table>
+</center>
