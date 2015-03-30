@@ -1,0 +1,9 @@
+<p>
+<b>From: </b> <%= @letter.from %><br>
+<b>Subject: </b> <%= @letter.subject %><br>
+<a href="/show_raw_letter?session_key=<%= @session_key %>&id=<%= @letter.id %>&address=<%= @address %>">Show raw message</a>
+</p>
+<p>
+
+<pre><%= @body %></pre>
+</p>
