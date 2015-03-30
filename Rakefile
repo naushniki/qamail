@@ -18,12 +18,12 @@ namespace :db do
 
     ActiveRecord::Base.connection.create_database($settings['DB_name'])
     
-   require './base.rb'
-   require './db/schema.rb'
-   require './db/seeds.rb'
+    require './base.rb'
+    require './db/schema.rb'
+    require './db/seeds.rb'
   end
 
   task :migrate do
-  puts 'Running migrations...'
+
   end
 end

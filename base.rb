@@ -2,6 +2,7 @@ require 'sinatra'
 require 'sinatra/activerecord'
 require 'yaml'
 require './models.rb'
+require 'mail'
 
 class QAMail < Sinatra::Base
   register Sinatra::ActiveRecordExtension

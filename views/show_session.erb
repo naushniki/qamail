@@ -1,0 +1,13 @@
+<center>
+<table border=0 width="100%" class="session_table">
+<tr vallign="top">
+<td align = "left"><img src="static/left.png"></td>
+<td align = "center"><h1><%= @newest_mailbox.address %></h1></td>
+<td align = "right"><a href="/new_mailbox?session_key=<%= @session_key %>"><img src="static/mailbox.png"></td>
+</tr>
+
+<tr vallign="top"><td colspan="3">
+<iframe width="100%" id="current_mailbox" name="mailbox" frameBorder="0" scrolling=yes src="/show_mailbox?session_key=<%= @session_key %>&address=<%= @newest_mailbox.address %>" onLoad="resizeIframe(this);"></iframe> 
+</td></tr>
+</table>
+</center>

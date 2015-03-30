@@ -3,3 +3,4 @@ log/**
 settings.yml
 Gemfile.lock
 letter_import.pid
+puma.pid
