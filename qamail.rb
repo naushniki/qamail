@@ -64,6 +64,7 @@ get '/show_raw_letter' do
     status 404
     erb :oops
   else
+  @letter.raw = @letter.raw.gsub('<', '&lt;').gsub('>', '&gt;')
   erb :show_raw_letter
   end
 end
@@ -80,6 +81,7 @@ get '/new_session' do
   24.times{session.session_key << [('0'..'9'),('A'..'Z'),('a'..'z')].map{ |i| i.to_a }.flatten.sample}
   session.save
   create_mailbox(session)
+  response.set_cookie 'session_key', session.session_key
   redirect "/show_session?session_key=#{session.session_key}"
 end
 
@@ -90,5 +92,9 @@ get '/new_mailbox' do
 end
 
 get '/' do
-  redirect '/new_session'
+  if request.cookies['session_key'] 
+    redirect "/show_session?session_key=#{request.cookies['session_key']}"
+  else
+    redirect '/new_session'
+  end
 end

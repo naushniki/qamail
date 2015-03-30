@@ -18,7 +18,7 @@ while(1 == 1) do
     attachments_info = String.new
     if parsed_letter.attachments.count > 0
       log.info("This letter has attachments")
-      attachments_info << "\nThis letter originally had attachments with it:\n"
+      attachments_info << "\nThis letter originally had attachments:\n"
       parsed_letter.attachments.each do |a|
         attachments_info << a.filename + "\n"
       end
