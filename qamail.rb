@@ -38,6 +38,8 @@ end
 
 get '/show_letter' do
   @letter = Session.where(:session_key => params[:session_key]).first.mailboxes.where(:address => params[:address]).first.letters.where(:id => params[:id]).first
+  @session_key = params[:session_key]
+  @address = params[:address]
   if @letter == nil then
     status 404
     erb :oops
@@ -51,7 +53,18 @@ get '/show_letter' do
         @body = part.body.decoded
       end
     end
+    @body = @body.force_encoding 'utf-8'
     erb :show_letter
+  end
+end
+
+get '/show_raw_letter' do
+  @letter = Session.where(:session_key => params[:session_key]).first.mailboxes.where(:address => params[:address]).first.letters.where(:id => params[:id]).first
+  if @letter == nil then
+    status 404
+    erb :oops
+  else
+  erb :show_raw_letter
   end
 end
 
