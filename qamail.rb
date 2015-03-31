@@ -92,7 +92,7 @@ get '/new_mailbox' do
 end
 
 get '/' do
-  if request.cookies['session_key'] 
+  if request.cookies['session_key'] and Session.where(:session_key => request.cookies['session_key']) 
     redirect "/show_session?session_key=#{request.cookies['session_key']}"
   else
     redirect '/new_session'
