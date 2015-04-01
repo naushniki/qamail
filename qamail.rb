@@ -26,9 +26,9 @@ get '/show_mailbox' do
     mailboxes = session.mailboxes.order(id: :asc)
     mailbox_index = mailboxes.find_index { |mailbox| mailbox.address == params[:address] }
     @mailbox = mailboxes[mailbox_index]
-    if (a = mailboxes[mailbox_index - 1]) == nil then @previous_mailbox_address = nil
+    if mailbox_index == 0 then @previous_mailbox_address = nil
     else
-     @previous_mailbox_address = a.address
+     @previous_mailbox_address = mailboxes[mailbox_index - 1].address
     end 
     if (a = mailboxes[mailbox_index + 1]) == nil then @next_mailbox_address = nil
     else 
