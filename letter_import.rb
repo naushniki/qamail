@@ -1,7 +1,7 @@
 require './base.rb'
 
-Process.daemon
 system ("kill -9 $(cat #{($settings['app_root_directory'] + "/letter_import.pid")})")
+Process.daemon
 pidfile = File.new(($settings['app_root_directory'] + "/letter_import.pid"),  "w")
 pidfile.truncate(0)
 pidfile.write(Process.pid)
@@ -11,8 +11,8 @@ dir = $settings['maildir'] + "/new"
 Dir.chdir(dir)
 while(1 == 1) do
   Dir.foreach(".") do |file|
-    if file.start_with?(".") then break end
-    if system("lsof " + file) != false then break end
+    next if file.start_with?(".")
+    next if system("lsof " + file) != false
     log.info("Found new letter file: #{file}")
     parsed_letter = Mail.read(file)
     attachments_info = String.new
