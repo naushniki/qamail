@@ -1,11 +1,13 @@
 <table border=0 width="100%" height="95%" class="session_table">
-<tr height="120px">
-<td align = "left"><img src="static/left.png"></td>
-<td align = "center"><h1><%= @newest_mailbox.address %></h1></td>
+<tr height="10%">
+<td align = "left"><h1 id="current_mailbox_address"><%= @newest_mailbox.address %></h1></td>
+<td align = "right"><img onclick = 'document.getElementById("current_mailbox").src=("/show_mailbox?address=" + window.previous_mailbox_address + "&session_key=<%= @session_key %>"); document.getElementById("current_mailbox_address").innerHTML = window.previous_mailbox_address;' src="static/left.png"></td>
+<td align = "right"><img onclick = 'document.getElementById("current_mailbox").src=("/show_mailbox?address=" + window.next_mailbox_address + "&session_key=<%= @session_key %>"); document.getElementById("current_mailbox_address").innerHTML = window.next_mailbox_address;' src="static/right.png"></td>
+<td align = "right"><img onclick = 'document.getElementById("current_mailbox").src = document.getElementById("current_mailbox").src' src="static/refresh.png"></td>
 <td align = "right"><a href="/new_mailbox?session_key=<%= @session_key %>"><img src="static/mailbox.png"></td>
 </tr>
 
-<tr vallign="top"><td colspan="3" height="85%">
+<tr vallign="top"><td colspan="5" height="85%">
 <iframe width="100%" height="100%" scrolling=no id="current_mailbox" name="mailbox" frameBorder="0" src="/show_mailbox?session_key=<%= @session_key %>&address=<%= @newest_mailbox.address %>"></iframe>
 </td></tr>
 </table>

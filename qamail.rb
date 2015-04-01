@@ -23,14 +23,23 @@ get '/show_mailbox' do
     status 404
     erb :oops
   else
-    mailbox = session.mailboxes.where(:address => params[:address]).first
-    if mailbox == nil then
+    mailboxes = session.mailboxes.order(id: :asc)
+    mailbox_index = mailboxes.find_index { |mailbox| mailbox.address == params[:address] }
+    @mailbox = mailboxes[mailbox_index]
+    if (a = mailboxes[mailbox_index - 1]) == nil then @previous_mailbox_address = nil
+    else
+     @previous_mailbox_address = a.address
+    end 
+    if (a = mailboxes[mailbox_index + 1]) == nil then @next_mailbox_address = nil
+    else 
+      @next_mailbox_address =  a.address
+    end
+    if @mailbox == nil then
       status 404
       erb :oops
     else
-      @letters = Letter.where(:mailbox_id => mailbox.id).order(written_at: :desc)
+      @letters = Letter.where(:mailbox_id => @mailbox.id).order(written_at: :desc)
       @session_key = params[:session_key]
-      @mailbox = mailbox
       erb :show_mailbox
     end
   end
@@ -81,7 +90,7 @@ get '/new_session' do
   24.times{session.session_key << [('0'..'9'),('A'..'Z'),('a'..'z')].map{ |i| i.to_a }.flatten.sample}
   session.save
   create_mailbox(session)
-  response.set_cookie 'session_key', session.session_key
+  response.set_cookie "session_key", {:value => session.session_key, :domain => $settings['domain'], :expires => (Time.now + 60*60*24*365)}
   redirect "/show_session?session_key=#{session.session_key}"
 end
 
