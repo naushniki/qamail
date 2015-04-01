@@ -1,12 +1,16 @@
 <table border=5 width="100%" class="mailbox_table">
 
-<td width="40%" height = "100%" valign="top"><div style="overflow-y:auto;" height = "100%">
-<table>
+<td height = "100%"  width="40%" valign="top">
+<div id="tableContainer" class="tableContainer">
+<table width = "100%">
+<thead align = "left" >
 <tr>
 <th>Subject</th>
 <th>From</th>
 <th>Date</th>
 </tr>
+</thead>
+<tbody> 
 <% @letters.each do |letter| %>
   <tr>
   <td valign="top"><a target = "letter" href="/show_letter?id=<%= letter.id%>&session_key=<%= @session_key%>&address=<%= @mailbox.address%>"><%= letter.subject %></a></td>
@@ -14,9 +18,10 @@
   <td valign="top"><%= letter.written_at %></td>
   </tr>
 <% end %>
-</tr>
+</tbody>
 </table>
-</td></div>
+</div>
+</td>
 <td valign="top" height="100%">
 <iframe id="current_letter" width="100%" height="100%" name="letter" frameBorder="0" scrolling=yes src=""></iframe>
 </td>
