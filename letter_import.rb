@@ -42,6 +42,8 @@ while(1 == 1) do
       letter.written_at = written_at
       letter.subject = subject
       letter.save
+      log.info("Letter subject is #{letter.subject}")
+      log.info("This letter is for #{mailbox.address}")
       log.info("Letter imported. Deleting file #{letter_file}")
       letter_file.close
       File.delete(letter_file)
