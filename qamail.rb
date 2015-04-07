@@ -107,3 +107,11 @@ get '/' do
     redirect '/new_session'
   end
 end
+
+get '/empty_mailbox' do
+  letters = Session.where(:session_key => params[:session_key]).first.mailboxes.where(:address => params[:address]).first.letters
+  letters.each do |l|
+    l.destroy
+  end
+  redirect "/show_mailbox?session_key=#{params[:session_key]}&address=#{params[:address]}"
+end
