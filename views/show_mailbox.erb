@@ -2,6 +2,7 @@
 parent.window.previous_mailbox_address = "<%= @previous_mailbox_address %>";
 parent.window.next_mailbox_address = "<%= @next_mailbox_address %>";
 parent.window.current_mailbox_address = "<%= @mailbox.address %>";
+parent.document.getElementById("number_of_letters").innerHTML = "<%= @mailbox.letters.count %>";
 </script>
 
 <table border=5 width="100%" class="mailbox_table">

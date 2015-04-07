@@ -1,6 +1,9 @@
 <table border=0 width="100%" height="95%" class="session_table">
 <tr height="10%">
-<td align = "left" width = "40%" ><h1 id="current_mailbox_address"><%= @newest_mailbox.address %></h1></td>
+<td align = "left" width = "40%" >
+<h1 id="current_mailbox_address"><%= @newest_mailbox.address %></h1>
+<p>Number of letters: <span id="number_of_letters"><%= @newest_mailbox.letters.count %></span></p>
+</td>
 <td></td>
 <td align = "right" width = "130px"><img onclick = 'if (window.previous_mailbox_address){  document.getElementById("current_mailbox").src=("/show_mailbox?address=" + window.previous_mailbox_address + "&session_key=<%= @session_key %>"); document.getElementById("current_mailbox_address").innerHTML = window.previous_mailbox_address;}' src="static/left.png"></td>
 <td align = "right" width = "130px"><img onclick = 'if (window.next_mailbox_address){document.getElementById("current_mailbox").src=("/show_mailbox?address=" + window.next_mailbox_address + "&session_key=<%= @session_key %>"); document.getElementById("current_mailbox_address").innerHTML = window.next_mailbox_address;}' src="static/right.png"></td>
