@@ -5,19 +5,23 @@ QA mail needs an external mail delivery agent (MDA). The MDA must be configured 
 
 Installation
 ------------
-1. Install postgresql. Create a user, give this user privilage to create databases.  
-2. Fill settings.yml.example and rename it to settings.yml.  
-3.  
+* Install postgresql. Create a user, give this user privilage to create databases.  
+* Fill settings.yml.example and rename it to settings.yml.  
+*  Install libraries
 ```
 bundle install.
 ```
-4. Start the importer:  
+* Create the DB
 ```
-ruby letter_importer.rb
+rake db:create
 ```
-5. Start the web interface:  
+* Start the importer:  
 ```
-bundle exec puma -e production -d -b unix:///tmp/qamail.sock --pidfile /home/qam/qamail/puma.pid
+ruby letter_import.rb
+```
+* Start the web interface:  
+```
+bundle exec puma -e production -d
 ```
 
 Live demo
