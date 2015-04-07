@@ -9,7 +9,7 @@ Installation
 * Fill settings.yml.example and rename it to settings.yml.  
 *  Install libraries
 ```
-bundle install.
+bundle install
 ```
 * Create the DB
 ```
