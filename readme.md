@@ -66,6 +66,7 @@ Put the following into the file /etc/postfix/wildcard.pcre:
 /^\w+\@example\.example\.com$/ qamail
 ```
 This is for domain name example.example.com, change it for your domain name.  
+
 * Restart Postfix
 ```
 /etc/init.d/postfix restart
