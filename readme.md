@@ -1,6 +1,6 @@
 QA Mail
 =============
-QA Mail lets you create unlimited number of disposable mailboxes and read letters that come into them. It is useful for testing web applications that deal with e-mail.  
+QA Mail lets you create unlimited number of disposable mailboxes and read letters in a cozy web-interface. It is useful for testing web applications that deal with e-mail.  
 
 Live demo
 ------------
