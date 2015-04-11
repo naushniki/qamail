@@ -7,6 +7,11 @@ Live demo
 
 http://qamail.ala.se
 
+To Do List
+------------
+
+Asynchronous notifications about new letters.
+
 Installation
 ------------
 * Configure the mail delivery agent.  
