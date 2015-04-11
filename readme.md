@@ -50,7 +50,7 @@ Enter your domain.
 postconf -e "home_mailbox = Maildir/"
 postconf -e "mailbox_command = "
 ```
-Edit file /etc/postfix/main.cf
+Edit file /etc/postfix/main.cf  
 Add or edit the following lines:
 ```
 myhostname = YOUR_DOMAIN_NAME
