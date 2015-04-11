@@ -78,4 +78,4 @@ adduser qamail
 ```
 Now configure QA Mail. The Maildir, which you should specify in settings.yml is /home/qamail/Maildir/  
 QA Mail itself must be run by user qamail.  
-Also, make sure taht your firewall allows TCP connections to port 25.
+Also, make sure that your firewall allows TCP connections to port 25.
