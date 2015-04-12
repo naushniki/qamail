@@ -90,7 +90,7 @@ get '/new_session' do
   24.times{session.session_key << [('0'..'9'),('A'..'Z'),('a'..'z')].map{ |i| i.to_a }.flatten.sample}
   session.save
   create_mailbox(session)
-  response.set_cookie "session_key", {:value => session.session_key, :domain => $settings['domain'], :expires => (Time.now + 60*60*24*365)}
+  response.set_cookie "session_key", {:value => session.session_key, :domain => $settings['domain'], :expires => (Time.now + 60*60*24*365*10)}
   redirect "/show_session?session_key=#{session.session_key}"
 end
 
