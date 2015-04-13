@@ -16,7 +16,7 @@ To Do List
 Installation
 ------------
 * Configure the mail delivery agent.  
-QA mail needs an external mail delivery agent (MDA). The MDA must be configured so that letters to any address on a specific domain will go into one maildir. Than you should point QA Mail to this Maildir by specifying it in settings.yml.  
+QA mail needs an external mail delivery agent (MDA). The MDA must be configured so that messages to any address on a specific domain will go into one maildir. Than you should point QA Mail to this Maildir by specifying it in settings.yml.  
 If you wish yo use Postfix, its configuration is described in the section "How to configure Postfix to work with QA Mail".
 * Install postgresql. Create a user, give this user privilage to create databases.  
 * Fill settings.yml.example and rename it to settings.yml.  
