@@ -10,7 +10,7 @@ http://qamail.ala.se
 To Do List
 ------------
 
-* Asynchronous notifications about new letters
+* Asynchronous notifications about new messages
 * Message forwarding / replying
 
 Installation
