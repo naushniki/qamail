@@ -12,6 +12,7 @@ To Do List
 
 * Asynchronous notifications about new messages
 * Message forwarding / replying
+* API for autotests
 
 Installation
 ------------
