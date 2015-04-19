@@ -124,3 +124,50 @@ GET /api/create_session HTTP/1.1
 </session>
 
 ```
+**List mailboxes**
+----
+Returns a list of mailboxes for given session.
+
+* **URL**
+
+/api/list_mailboxes
+
+* **Method:**
+
+`GET`
+  
+*  **URL Params**
+
+   **Required:**
+ 
+   `session_key=[string]`
+
+* **Sample Request:**
+```
+GET /api/list_mailboxes?session_key=G3nfwoElCc33f8ZHXEJgWflA HTTP/1.1
+```
+
+* **Sample Response:**
+
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<session>
+  <session_key>G3nfwoElCc33f8ZHXEJgWflA</session_key>
+  <mailbox>
+    <address>1a7667x@qamail.ala.se</address>
+  </mailbox>
+  <mailbox>
+    <address>e17ofvl@qamail.ala.se</address>
+  </mailbox>
+  <mailbox>
+    <address>90mgv0o@qamail.ala.se</address>
+  </mailbox>
+  <mailbox>
+    <address>frkjjwj@qamail.ala.se</address>
+  </mailbox>
+  <mailbox>
+    <address>a9hn63p@qamail.ala.se</address>
+  </mailbox>
+</session>
+
+```
