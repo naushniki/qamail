@@ -1,4 +1,5 @@
 require './base.rb'
+require './api.rb'
 
 def create_mailbox(session)
   mailbox = Mailbox.new
@@ -7,6 +8,15 @@ def create_mailbox(session)
   7.times{mailbox.address << [('0'..'9'),('a'..'z')].map{ |i| i.to_a }.flatten.sample}
   mailbox.address << "@" << $settings['domain']
   mailbox.save
+  return mailbox
+end
+
+def create_session
+  session = Session.new
+  session.session_key = String.new
+  24.times{session.session_key << [('0'..'9'),('A'..'Z'),('a'..'z')].map{ |i| i.to_a }.flatten.sample}
+  session.save
+  return session
 end
 
 get '/static/:file' do
@@ -85,10 +95,7 @@ get '/show_session' do
 end
 
 get '/new_session' do
-  session = Session.new
-  session.session_key = String.new
-  24.times{session.session_key << [('0'..'9'),('A'..'Z'),('a'..'z')].map{ |i| i.to_a }.flatten.sample}
-  session.save
+  session = create_session
   create_mailbox(session)
   response.set_cookie "session_key", {:value => session.session_key, :domain => $settings['domain'], :expires => (Time.now + 60*60*24*365*10)}
   redirect "/show_session?session_key=#{session.session_key}"
