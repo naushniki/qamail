@@ -86,4 +86,41 @@ adduser qamail
 ```
 Now configure QA Mail. The Maildir, which you should specify in settings.yml is /home/qamail/Maildir/  
 QA Mail itself must be run by user qamail.  
-Also, make sure that your firewall allows TCP connections to port 25.
+Also, make sure that your firewall allows TCP connections to port 25.  
+  
+List of REST API methods
+------------
+
+**Create session**
+----
+Returns a new session with one mailbox.
+
+* **URL**
+
+/api/create_session
+
+* **Method:**
+
+`GET`
+  
+*  **URL Params**
+
+None
+
+* **Sample Request:**
+```
+GET /api/create_session HTTP/1.1
+```
+
+* **Sample Response:**
+
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<session>
+  <session_key>WmY9nvtrAr1wi4JUZRVaE3ST</session_key>
+  <mailbox>
+    <address>y2dxpt0@qamail.ala.se</address>
+  </mailbox>
+</session>
+
+```
