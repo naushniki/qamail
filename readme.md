@@ -171,3 +171,158 @@ GET /api/list_mailboxes?session_key=G3nfwoElCc33f8ZHXEJgWflA HTTP/1.1
 </session>
 
 ```
+**Create mailbox**
+----
+Creates a new mailbox for a given session.
+
+* **URL**
+
+/api/create_mailbox
+
+* **Method:**
+
+`GET`
+  
+*  **URL Params**
+
+   **Required:**
+ 
+   `session_key=[string]`
+
+* **Sample Request:**
+```
+GET /api/create_mailbox?session_key=G3nfwWElCcXHf8ZHXEJgWf8A HTTP/1.1
+```
+
+* **Sample Response:**
+
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<mailbox>
+  <address>mnjpvka@qamail.ala.se</address>
+</mailbox>
+
+```
+**Show mailbox content**
+----
+Returns a list of letters in a given mailbox, without letter content.
+
+* **URL**
+
+/api/show_mailbox_content
+
+* **Method:**
+
+`GET`
+  
+*  **URL Params**
+
+   **Required:**
+ 
+   `session_key=[string]`  
+   `address=[string]`
+
+* **Sample Request:**
+```
+GET /api/show_mailbox_content?session_key=Ry1Nc1wehF99t6y6DRQ8v8Uc&address=5y7yuva@qamail.ala.se HTTP/1.1
+```
+
+* **Sample Response:**
+
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<mailbox>
+  <address>5y7yuva@qamail.ala.se</address>
+  <letter>
+    <id>18706</id>
+    <subject>test message</subject>
+    <from>v.pryakhin@gmail.com</from>
+    <date>2015-04-19 14:53:59 UTC</date>
+  </letter>
+</mailbox>
+
+```
+
+**Show letter**
+----
+Shows letter content
+
+* **URL**
+
+/api/show_letter
+
+* **Method:**
+
+`GET`
+  
+*  **URL Params**
+
+   **Required:**
+ 
+   `session_key=[string]`  
+   `address=[string]`  
+   `letter_id=[integer]`  
+
+* **Sample Request:**
+```
+GET /api/show_letter?session_key=Ry1Nc1wehF99t6y6DRQ8v8Uc&address=5y7yuva@qamail.ala.se&letter_id=18706 HTTP/1.1
+```
+
+* **Sample Response:**
+
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<letter>
+  <id>18706</id>
+  <subject>test message</subject>
+  <from>v.pryakhin@gmail.com</from>
+  <date>2015-04-19 14:53:59 UTC</date>
+  <content>Return-Path: &lt;v.pryakhin@gmail.com&gt;
+Received: from mail-qk0-f170.google.com (mail-qk0-f170.google.com [209.85.220.170]) by qamail.ala.se (Postfix) with ESMTPS id 41D0D60720 for &lt;5y7yuva@qamail.ala.se&gt;; Sun, 19 Apr 2015 17:53:59 +0300
+Received: by qkgx75 with SMTP id x75so168702965qkg.1 for &lt;5y7yuva@qamail.ala.se&gt;; Sun, 19 Apr 2015 07:53:59 -0700
+Received: by 10.141.4.65 with HTTP; Sun, 19 Apr 2015 07:53:59 -0700
+Date: Sun, 19 Apr 2015 17:53:59 +0300
+From: Vitaly Pryakhin &lt;v.pryakhin@gmail.com&gt;
+To: 5y7yuva@qamail.ala.se
+Message-ID: &lt;CAMHkD7W01arEjYH_g-CSGpsXGD_Gu_0dB_FxQSCMRXiVLETCNw@mail.gmail.com&gt;
+Subject: test message
+...
+...
+...
+end of message is skipped in the example
+...
+...
+...
+</content>
+</letter>
+
+
+```
+
+**Empty mailbox**
+----
+Deletes all letters in a given mailbox.
+
+* **URL**
+
+/api/empty_mailbox
+
+* **Method:**
+
+`GET`
+  
+*  **URL Params**
+
+   **Required:**
+ 
+   `session_key=[string]`  
+   `address=[string]`
+
+* **Sample Request:**
+```
+GET /empty_mailbox?session_key=Ry1Nc1wehF99t6y6DRQ8v8Uc&address=5y7yuva@qamail.ala.se HTTP/1.1
+```
+
+* **Sample Response:**
+
+Response contains no body.
