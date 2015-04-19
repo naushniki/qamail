@@ -125,7 +125,7 @@ GET /api/create_session HTTP/1.1
 ```
 **List mailboxes**
 ----
-Returns a list of mailboxes for given session.
+Returns a list of mailboxes for a given session.
 
 * **URL**
 
