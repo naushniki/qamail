@@ -24,6 +24,12 @@ namespace :db do
   end
 
   task :migrate do
-
+  
+    puts 'Running migrations...'
+    require './base.rb'
+    ActiveRecord::Base.logger = Logger.new(STDOUT)
+    ActiveRecord::Migration.verbose = true
+    ActiveRecord::Migrator.migrate("db/migrations")
   end
+
 end
