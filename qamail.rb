@@ -73,7 +73,7 @@ get '/show_letter' do
       end
     end
     @body = @body.force_encoding 'utf-8'
-    erb :show_letter
+    erb :show_letter, :layout => :no_css
   end
 end
 
