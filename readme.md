@@ -77,7 +77,7 @@ virtual_alias_maps = pcre:/etc/postfix/wildcard.pcre
 
 * Configure address rewriting  
 Put the following into the file /etc/postfix/wildcard.pcre:  
-(This is for domain name example.example.com, change it for your domain name. )
+(This is for domain name example.example.com, change it for your domain name.)
 ```
 /^\w+\@example\.example\.com$/ qamail
 ```
