@@ -21,7 +21,13 @@ Installation
 QA mail needs an external mail delivery agent (MDA). The MDA must be configured so that messages to any address on a specific domain will go into one maildir. Than you should point QA Mail to this Maildir by specifying it in settings.yml.  
 If you wish yo use Postfix, its configuration is described in the section "How to configure Postfix to work with QA Mail".
 * Install postgresql. Create a user, give this user privilage to create databases.  
-* Fill settings.yml.example and rename it to settings.yml.  
+* Fill in settings.yml.example and rename it to settings.yml.  
+*  Install [rvm](https://rvm.io/rvm/install) (if you don't already have it)
+*  Install fresh ruby
+```
+rvm install 2.2.2
+rvm --default use 2.2.2
+```
 *  Install libraries
 ```
 bundle install
