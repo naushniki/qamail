@@ -13,6 +13,7 @@ To Do List
 
 * Asynchronous notifications about new messages
 * Message forwarding / replying
+* Properly display multipart e-mails.
 
 Installation
 ------------
