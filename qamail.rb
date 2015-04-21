@@ -48,7 +48,7 @@ get '/show_mailbox' do
       status 404
       erb :oops
     else
-      @letters = Letter.where(:mailbox_id => @mailbox.id).order(written_at: :desc)
+      @letters = Letter.where(:mailbox_id => @mailbox.id).order(written_at: :desc).select([:id, :from, :subject, :written_at])
       @session_key = params[:session_key]
       erb :show_mailbox
     end

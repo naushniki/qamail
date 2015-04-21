@@ -1,7 +1,7 @@
 xml.instruct! :xml, :version => '1.0'
 xml.mailbox do
   xml.address @mailbox.address
-  @mailbox.letters.each do |letter|
+  @mailbox.letters.select([:id, :from, :subject, :written_at]).each do |letter|
     xml.letter do
     	xml.id letter.id
       xml.subject letter.subject
