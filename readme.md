@@ -13,6 +13,7 @@ To Do List
 
 * Asynchronous notifications about new messages
 * Message forwarding / replying
+* Properly display multipart e-mails.
 
 Installation
 ------------
@@ -20,7 +21,13 @@ Installation
 QA mail needs an external mail delivery agent (MDA). The MDA must be configured so that messages to any address on a specific domain will go into one maildir. Than you should point QA Mail to this Maildir by specifying it in settings.yml.  
 If you wish yo use Postfix, its configuration is described in the section "How to configure Postfix to work with QA Mail".
 * Install postgresql. Create a user, give this user privilage to create databases.  
-* Fill settings.yml.example and rename it to settings.yml.  
+* Fill in settings.yml.example and rename it to settings.yml.  
+*  Install [rvm](https://rvm.io/rvm/install) (if you don't already have it)
+*  Install fresh ruby
+```
+rvm install 2.2.2
+rvm --default use 2.2.2
+```
 *  Install libraries
 ```
 bundle install
@@ -43,7 +50,7 @@ bundle exec puma -e production -d
 How to configure Postfix to work with QA Mail 
 ------------
 
-This manual will help you configure Postfix to work with QA Mail on Debian 7.  
+This manual will help you configure Postfix to work with QA Mail on Debian 7 (should also work for Ubuntu and other debian-based Linux distros).  
 First, you should tie your domain name to the IP address of your server. You don't need an MX DNS record, a simple A record is sufficient. If you don't have a domain name, you can get one for free here: http://freedns.afraid.org/  
 
 * Install Postfix  
@@ -69,11 +76,11 @@ virtual_alias_maps = pcre:/etc/postfix/wildcard.pcre
 ```
 
 * Configure address rewriting  
-Put the following into the file /etc/postfix/wildcard.pcre:
+Put the following into the file /etc/postfix/wildcard.pcre:  
+(This is for domain name example.example.com, change it for your domain name.)
 ```
 /^\w+\@example\.example\.com$/ qamail
 ```
-This is for domain name example.example.com, change it for your domain name.  
 
 * Restart Postfix
 ```
