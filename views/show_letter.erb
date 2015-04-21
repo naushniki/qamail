@@ -1,0 +1,12 @@
+<body style="background-color:white">
+<p style="font-family:serif">
+<b style="font-weight:bold">From: </b> <%= @letter.from %><br>
+<b style="font-weight:bold">Date: </b> <%= @letter.written_at %><br>
+<b style="font-weight:bold">Subject: </b> <%= @letter.subject %><br>
+<a style="color:blue; text-decoration:underline;" href="/show_raw_letter?session_key=<%= @session_key %>&id=<%= @letter.id %>&address=<%= @address %>">Show raw message</a>
+</p>
+</body>
+
+<p>
+<pre><%= @body %></pre>
+</p>
