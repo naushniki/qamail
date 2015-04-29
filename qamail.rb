@@ -24,6 +24,7 @@ def create_session
 end
 
 get '/static/:file' do
+  cache_control :public, :must_revalidate, :max_age => 31536000
   etag Digest::SHA1.hexdigest(File.read('./static/'+params[:file]))
   send_file('./static/'+params[:file])
 end
@@ -79,6 +80,7 @@ get '/show_letter' do
       end
     end
     @body = @body.force_encoding 'utf-8'
+    cache_control :private, :must_revalidate, :max_age => 31536000
     etag Digest::SHA1.hexdigest(@letter.raw)
     erb :show_letter, :layout => :no_css
   end
@@ -91,6 +93,7 @@ get '/show_raw_letter' do
     erb :oops
   else
   @letter.raw = @letter.raw.gsub('<', '&lt;').gsub('>', '&gt;')
+  cache_control :private, :must_revalidate, :max_age => 31536000
   etag Digest::SHA1.hexdigest(@letter.raw)
   erb :show_raw_letter
   end
