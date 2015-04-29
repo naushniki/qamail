@@ -5,6 +5,36 @@ before do
   cache_control :private, :must_revalidate, :max_age => 0
 end
 
+class Mailbox
+  def etag
+    if f = self.letters.order(id: :desc).first then
+      Digest::SHA1.hexdigest(f.subject.to_s + f.written_at.to_s + f.from.to_s + self.previous_mailbox_address.to_s + self.next_mailbox_address.to_s)
+    else
+      Digest::SHA1.hexdigest(self.previous_mailbox_address.to_s + self.next_mailbox_address.to_s)
+    end
+  end
+
+  def previous_mailbox_address
+    session = self.session
+    mailboxes = session.mailboxes.order(id: :asc)
+    mailbox_index = mailboxes.find_index { |mailbox| mailbox.address == self.address }
+    if mailbox_index == 0 then return nil
+    else
+      return mailboxes[mailbox_index - 1].address
+    end 
+  end
+
+  def next_mailbox_address
+    session = self.session
+    mailboxes = session.mailboxes.order(id: :asc)
+    mailbox_index = mailboxes.find_index { |mailbox| mailbox.address == self.address }
+    if (a = mailboxes[mailbox_index + 1]) == nil then return nil
+    else 
+      return a.address
+    end
+  end
+end
+
 def create_mailbox(session)
   mailbox = Mailbox.new
   mailbox.session_id = session.id
@@ -34,35 +64,14 @@ get '/favicon.ico' do
 end
 
 get '/show_mailbox' do
-  session = Session.where(:session_key => params[:session_key]).first
-  if session == nil then
+  @mailbox = Session.where(:session_key => params[:session_key]).first.mailboxes.where(:address => params[:address]).first
+  if @mailbox == nil then
     status 404
     erb :oops
   else
-    mailboxes = session.mailboxes.order(id: :asc)
-    mailbox_index = mailboxes.find_index { |mailbox| mailbox.address == params[:address] }
-    @mailbox = mailboxes[mailbox_index]
-    if mailbox_index == 0 then @previous_mailbox_address = nil
-    else
-     @previous_mailbox_address = mailboxes[mailbox_index - 1].address
-    end 
-    if (a = mailboxes[mailbox_index + 1]) == nil then @next_mailbox_address = nil
-    else 
-      @next_mailbox_address =  a.address
-    end
-    if @mailbox == nil then
-      status 404
-      erb :oops
-    else
-      @letters = Letter.where(:mailbox_id => @mailbox.id).order(written_at: :desc).select([:id, :from, :subject, :written_at])
-      @session_key = params[:session_key]
-      if @letters.first then
-        etag Digest::SHA1.hexdigest(@letters.first.subject.to_s + @letters.first.written_at.to_s + @letters.first.from.to_s + @previous_mailbox_address.to_s + @next_mailbox_address.to_s)
-      else
-        etag Digest::SHA1.hexdigest(@previous_mailbox_address.to_s + @next_mailbox_address.to_s)
-      end
-      erb :show_mailbox
-    end
+    @letters = Letter.where(:mailbox_id => @mailbox.id).order(written_at: :desc).select([:id, :from, :subject, :written_at])
+    etag @mailbox.etag
+    erb :show_mailbox
   end
 end
 
