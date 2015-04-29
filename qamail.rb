@@ -2,7 +2,7 @@ require './base.rb'
 require './api.rb'
 
 before do
-  cache_control :private, :no_cache, :max_age => 3600000
+  cache_control :private, :must_revalidate, :max_age => 0
 end
 
 def create_mailbox(session)
@@ -55,7 +55,7 @@ get '/show_mailbox' do
     else
       @letters = Letter.where(:mailbox_id => @mailbox.id).order(written_at: :desc).select([:id, :from, :subject, :written_at])
       @session_key = params[:session_key]
-      etag Digest::SHA1.hexdigest(@letters.map{|l| (l.subject+l.written_at.to_s+l.from)}.join+@previous_mailbox_address.to_s+@next_mailbox_address.to_s)
+      etag Digest::SHA1.hexdigest(@letters.map{|l| (l.subject.to_s + l.written_at.to_s + l.from.to_s) }.join + @previous_mailbox_address.to_s + @next_mailbox_address.to_s)
       erb :show_mailbox
     end
   end
