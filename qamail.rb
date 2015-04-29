@@ -1,6 +1,10 @@
 require './base.rb'
 require './api.rb'
 
+before do
+  cache_control :private, :no_cache, :max_age => 3600000
+end
+
 def create_mailbox(session)
   mailbox = Mailbox.new
   mailbox.session_id = session.id
@@ -20,11 +24,12 @@ def create_session
 end
 
 get '/static/:file' do
+  etag Digest::SHA1.hexdigest(File.read('./static/'+params[:file]))
   send_file('./static/'+params[:file])
 end
 
 get '/favicon.ico' do
-  send_file('./static/favicon.ico')
+  redirect "/static/favicon.ico"
 end
 
 get '/show_mailbox' do
@@ -50,6 +55,7 @@ get '/show_mailbox' do
     else
       @letters = Letter.where(:mailbox_id => @mailbox.id).order(written_at: :desc).select([:id, :from, :subject, :written_at])
       @session_key = params[:session_key]
+      etag Digest::SHA1.hexdigest(@letters.map{|l| (l.subject+l.written_at.to_s+l.from)}.join+@previous_mailbox_address.to_s+@next_mailbox_address.to_s)
       erb :show_mailbox
     end
   end
@@ -73,6 +79,7 @@ get '/show_letter' do
       end
     end
     @body = @body.force_encoding 'utf-8'
+    etag Digest::SHA1.hexdigest(@letter.raw)
     erb :show_letter, :layout => :no_css
   end
 end
@@ -84,6 +91,7 @@ get '/show_raw_letter' do
     erb :oops
   else
   @letter.raw = @letter.raw.gsub('<', '&lt;').gsub('>', '&gt;')
+  etag Digest::SHA1.hexdigest(@letter.raw)
   erb :show_raw_letter
   end
 end
