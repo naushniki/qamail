@@ -56,7 +56,11 @@ get '/show_mailbox' do
     else
       @letters = Letter.where(:mailbox_id => @mailbox.id).order(written_at: :desc).select([:id, :from, :subject, :written_at])
       @session_key = params[:session_key]
-      etag Digest::SHA1.hexdigest(@letters.map{|l| (l.subject.to_s + l.written_at.to_s + l.from.to_s) }.join + @previous_mailbox_address.to_s + @next_mailbox_address.to_s)
+      if @letters.first then
+        etag Digest::SHA1.hexdigest(@letters.first.subject.to_s + @letters.first.written_at.to_s + @letters.first.from.to_s + @previous_mailbox_address.to_s + @next_mailbox_address.to_s)
+      else
+        etag Digest::SHA1.hexdigest(@previous_mailbox_address.to_s + @next_mailbox_address.to_s)
+      end
       erb :show_mailbox
     end
   end
