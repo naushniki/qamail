@@ -24,29 +24,27 @@ while(1 == 1) do
       end
     end
     raw = parsed_letter.without_attachments!.to_s + attachments_info
-    mailbox = Mailbox.where(:address => parsed_letter.header['X-Original-To'].value).first
+    to_address = parsed_letter.header['X-Original-To'].value
+    mailbox = Mailbox.where(:address => to_address).first
     if mailbox == nil
-      log.info("Mailbox not found in the database: #{to_addresses}. This letter was not imported. Deleting file.")
+      log.info("Mailbox not found in the database: #{to_address}. This letter was not imported. Deleting file. #{file}")
       File.delete(file)
       break
     end
     subject = parsed_letter.subject
     from = parsed_letter.from.first
     written_at = parsed_letter.date
-    File.open(file, "r") do |letter_file|
-      letter = Letter.new
-      letter.raw = raw
-      letter.mailbox_id = mailbox.id
-      letter.from = from
-      letter.written_at = written_at
-      letter.subject = subject
-      letter.save
-      log.info("Letter subject is #{letter.subject}")
-      log.info("This letter is for #{mailbox.address}")
-      log.info("Letter imported. Deleting file #{letter_file}")
-      letter_file.close
-      File.delete(letter_file)
-    end
+    letter = Letter.new
+    letter.raw = raw
+    letter.mailbox_id = mailbox.id
+    letter.from = from
+    letter.written_at = written_at
+    letter.subject = subject
+    letter.save
+    log.info("Letter subject is #{letter.subject}")
+    log.info("This letter is for #{mailbox.address}")
+    log.info("Letter imported. Deleting file #{file}")
+    File.delete(file) 
   end
   sleep(0.1)
 end
