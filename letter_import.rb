@@ -24,8 +24,7 @@ while(1 == 1) do
       end
     end
     raw = parsed_letter.without_attachments!.to_s + attachments_info
-    to_addresses = parsed_letter.to
-    mailbox = Mailbox.where(:address => to_addresses).first
+    mailbox = Mailbox.where(:address => parsed_letter.header['X-Original-To'].value).first
     if mailbox == nil
       log.info("Mailbox not found in the database: #{to_addresses}. This letter was not imported. Deleting file.")
       File.delete(file)
