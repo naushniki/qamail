@@ -9,15 +9,17 @@ class Mailbox
   def etag
     digest = String.new
     if f = self.letters.order(id: :desc).first then
-      digest << f.subject.to_s 
-      digest << f.written_at.to_s 
-      digest << f.from.to_s 
-      digest << self.previous_mailbox_address.to_s 
+      digest << f.subject.to_s
+      digest << f.written_at.to_s
+      digest << f.from.to_s
+      digest << self.previous_mailbox_address.to_s
       digest << self.next_mailbox_address.to_s
+      digest << self.address.to_s
       return  Digest::SHA1.hexdigest(digest)
     else
       digest << self.previous_mailbox_address.to_s
       digest << self.next_mailbox_address.to_s
+      digest << self.address.to_s
       return Digest::SHA1.hexdigest(digest)
     end
   end
