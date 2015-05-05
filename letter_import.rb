@@ -1,7 +1,7 @@
 require './base.rb'
 
 system ("kill -9 $(cat #{($settings['app_root_directory'] + "/letter_import.pid")})")
-Process.daemon
+unless ARGV.include?('--fg') then Process.daemon end
 pidfile = File.new(($settings['app_root_directory'] + "/letter_import.pid"),  "w")
 pidfile.truncate(0)
 pidfile.write(Process.pid)
