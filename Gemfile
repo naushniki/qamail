@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 gem 'sinatra', '~>1.4.6'
 gem 'sinatra-activerecord', '~>2.0.5'
+gem 'sinatra-contrib'
 gem 'pg', '>=0.18.1'
 gem 'puma'
 gem 'rake'

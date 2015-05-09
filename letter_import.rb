@@ -44,7 +44,10 @@ while(1 == 1) do
     log.info("Letter subject is #{letter.subject}")
     log.info("This letter is for #{mailbox.address}")
     log.info("Letter imported. Deleting file #{file}")
-    File.delete(file) 
+    File.delete(file)
+    notify_query = 'notify "' + mailbox.address + '"'
+    log.info("Executing notify query: #{notify_query}")
+    ActiveRecord::Base.connection.execute(notify_query)
   end
   sleep(0.1)
 end
