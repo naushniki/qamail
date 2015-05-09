@@ -3,6 +3,14 @@ parent.window.previous_mailbox_address = "<%= @mailbox.previous_mailbox_address 
 parent.window.next_mailbox_address = "<%= @mailbox.next_mailbox_address %>";
 parent.window.current_mailbox_address = "<%= @mailbox.address %>";
 parent.document.getElementById("number_of_letters").innerHTML = "<%= @mailbox.letters.count %>";
+function UpdateLetterList(){
+var client = new XMLHttpRequest();
+client.open('GET', '/list_letters_in_mailbox?session_key=<%= @mailbox.session.session_key%>&address=<%= @mailbox.address%>');
+client.onreadystatechange = function() {
+  document.getElementById("list_of_letters").innerHTML = client.responseText;
+}
+client.send();
+}
 </script>
 
 <table border=5 width="100%" class="mailbox_table">
@@ -18,6 +26,7 @@ parent.document.getElementById("number_of_letters").innerHTML = "<%= @mailbox.le
 </tr>
 </thead>
 <tbody> 
+<span id="list_of_letters">
 <% @letters.each do |letter| %>
   <tr>
   <td valign="top"><a target = "letter" href="/show_letter?id=<%= letter.id%>&session_key=<%= @mailbox.session.session_key%>&address=<%= @mailbox.address%>"><%= letter.subject %></a></td>
@@ -25,6 +34,7 @@ parent.document.getElementById("number_of_letters").innerHTML = "<%= @mailbox.le
   <td valign="top"><%= letter.written_at %></td>
   </tr>
 <% end %>
+</span>
 </tbody>
 </table>
 </div>

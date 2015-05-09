@@ -85,6 +85,17 @@ get '/show_mailbox' do
   end
 end
 
+get '/list_letters_in_mailbox' do
+  @mailbox = Session.where(:session_key => params[:session_key]).first.mailboxes.where(:address => params[:address]).first
+  if @mailbox == nil then
+    status 404
+    erb :oops
+  else
+    @letters = Letter.where(:mailbox_id => @mailbox.id).order(written_at: :desc).select([:id, :from, :subject, :written_at])
+    erb :list_letters_in_mailbox, :layout => :no_css
+  end
+end
+
 get '/show_letter' do
   @letter = Session.where(:session_key => params[:session_key]).first.mailboxes.where(:address => params[:address]).first.letters.where(:id => params[:id]).first
   @session_key = params[:session_key]
@@ -105,7 +116,9 @@ get '/show_letter' do
     @body = @body.force_encoding 'utf-8'
     cache_control :private, :must_revalidate, :max_age => 31536000
     etag Digest::SHA1.hexdigest(@letter.raw)
-    erb :show_letter, :layout => :no_css
+    erb :show_lette
+    etag @mailbox.etag
+r
   end
 end
 
