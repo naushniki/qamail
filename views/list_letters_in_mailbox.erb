@@ -1,3 +1,4 @@
+<span id="list_of_letters">
 <% @letters.each do |letter| %>
   <tr>
   <td valign="top"><a target = "letter" href="/show_letter?id=<%= letter.id%>&session_key=<%= @mailbox.session.session_key%>&address=<%= @mailbox.address%>"><%= letter.subject %></a></td>
@@ -5,3 +6,4 @@
   <td valign="top"><%= letter.written_at %></td>
   </tr>
 <% end %>
+</span>

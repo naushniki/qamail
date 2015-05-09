@@ -7,7 +7,12 @@ function UpdateLetterList(){
 var client = new XMLHttpRequest();
 client.open('GET', '/list_letters_in_mailbox?session_key=<%= @mailbox.session.session_key%>&address=<%= @mailbox.address%>');
 client.onreadystatechange = function() {
-  document.getElementById("list_of_letters").innerHTML = client.responseText;
+  old_span = document.getElementById("list_of_letters");
+  p=new DOMParser();
+  new_span_doc=p.parseFromString(client.responseText, "text/html");
+  new_span = new_span_doc.getElementById("list_of_letters");
+  parent = old_span.parentNode;
+  parent.replaceChild(new_span, old_span);
 }
 client.send();
 }
