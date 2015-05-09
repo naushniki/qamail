@@ -12,7 +12,7 @@ client.onreadystatechange = function() {
   new_span_doc=p.parseFromString(client.responseText, "text/html");
   new_span = new_span_doc.getElementById("list_of_letters");
   parent = old_span.parentNode;
-  parent.replaceChild(new_span, old_span);
+  parent.replaceChild(new_span_doc, old_span);
 }
 client.send();
 }
