@@ -13,7 +13,7 @@ get '/listen_to_mailbox' do
     streams <<  stream do out
       listen_query = 'listen "' +  @mailbox.address.to_s + '"'
       @pg_listen_connection.execute(listen_query)
-      conn.wait_for_notify do
+      @pg_listen_connection.wait_for_notify do
         out.puts 'new'
       end
     end
