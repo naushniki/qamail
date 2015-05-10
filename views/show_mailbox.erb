@@ -3,6 +3,10 @@ parent.window.previous_mailbox_address = "<%= @mailbox.previous_mailbox_address 
 parent.window.next_mailbox_address = "<%= @mailbox.next_mailbox_address %>";
 parent.window.current_mailbox_address = "<%= @mailbox.address %>";
 parent.document.getElementById("number_of_letters").innerHTML = "<%= @mailbox.letters.count %>";
+var notify_stream = new EventSource('/listen_to_mailbox?session_key=<%= @mailbox.session.session_key%>&address=<%= @mailbox.address%>');
+notify_stream.onmessage = function (message) {
+   parent.document.getElementById("current_mailbox").src = "/show_mailbox?session_key=<%= @mailbox.session.session_key%>&address=<%= @mailbox.address%>";
+};
 </script>
 
 <table border=5 width="100%" class="mailbox_table">
