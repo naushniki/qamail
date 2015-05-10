@@ -1,5 +1,6 @@
 require './base.rb'
 require './api.rb'
+require './notify.rb'
 
 before do
   cache_control :private, :must_revalidate, :max_age => 0
@@ -152,22 +153,4 @@ end
 get '/empty_mailbox' do
   Session.where(:session_key => params[:session_key]).first.mailboxes.where(:address => params[:address]).first.letters.destroy_all
   redirect "/show_mailbox?session_key=#{params[:session_key]}&address=#{params[:address]}"
-end
-
-get '/listen_to_mailbox' do
-  @mailbox = Session.where(:session_key => params[:session_key]).first.mailboxes.where(:address => params[:address]).first
-  if @mailbox = nil then 
-    status 404
-    erb :oops
-  end
-  stream do |out|
-    ActiveRecord::Base.connection_pool.with_connection do |connection|
-      conn = connection.instance_variable_get(:@connection)
-      listen_query = 'listen "' +  @mailbox.address.to_s + '"'
-      conn.async_exec(listen_query)
-      conn.wait_for_notify do
-        out.puts 'new'
-      end
-    end
-  end
 end
