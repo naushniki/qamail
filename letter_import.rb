@@ -1,18 +1,4 @@
-require 'sinatra/activerecord'
-require 'yaml'
-require './models.rb'
-require 'mail'
-
-$settings = YAML.load_file("settings.yml")
-
-ActiveRecord::Base.establish_connection(
-  :adapter  => 'postgresql',
-  :host     => $settings['DB_host'],
-  :username => $settings['DB_username'],
-  :password => $settings['DB_password'],
-  :database => $settings['DB_name'],
-  :encoding => $settings['DB_encoding']
-)
+require './base.rb'
 
 system ("kill -9 $(cat #{($settings['app_root_directory'] + "/letter_import.pid")})")
 unless ARGV.include?('--fg') then Process.daemon end
