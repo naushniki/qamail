@@ -1,7 +1,6 @@
 require './base.rb'
 require './api.rb'
 require './notify.rb'
-require 'sinatra/streaming'
 require 'digest/sha1'
 
 class QAMail < Sinatra::Base
