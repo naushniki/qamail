@@ -1,6 +1,13 @@
 require './base.rb'
 require './api.rb'
 require './notify.rb'
+require 'sinatra/streaming'
+require 'digest/sha1'
+
+class QAMail < Sinatra::Base
+  helpers Sinatra::Streaming
+end
+
 
 before do
   cache_control :private, :must_revalidate, :max_age => 0
