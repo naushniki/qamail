@@ -1,3 +1,5 @@
+require 'sinatra/streaming'
+
 ActiveRecord::Base.connection_pool.with_connection do |connection|
   @pg_listen_connection = connection.instance_variable_get(:@connection)
 end
@@ -11,15 +13,21 @@ get '/listen_to_mailbox', provides: 'text/event-stream' do
     erb :oops
   else 
     stream do |out|
+      streams << out
       ActiveRecord::Base.connection_pool.with_connection do |connection|
         pg_listen_connection = connection.instance_variable_get(:@connection)
         listen_query = 'listen "' +  @mailbox.address.to_s + '"'
         pg_listen_connection.exec(listen_query)
-        while true
-          pg_listen_connection.wait_for_notify
-          out.puts "data: new letter\n\n"
+        t = Thread.new do
+          while true
+            pg_listen_connection.wait_for_notify
+            out.puts "data: new letter\n\n"
+          end
         end
+        out.callback{t.kill; streams.delete(out); http.conn.close_connection}
+        out.errback { http.conn.close_connection }
       end
     end
   end
 end
+
