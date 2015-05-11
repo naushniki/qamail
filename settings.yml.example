@@ -6,3 +6,4 @@ DB_username: db_user
 DB_password: db_password
 DB_name: db_name
 DB_encoding: utf8
+async_notifications: off
