@@ -6,6 +6,8 @@ require 'sanitize'
 
 sanitize_custom_config = Sanitize::Config::RELAXED.dup
 sanitize_custom_config[:remove_contents] = true
+sanitize_custom_config[:elements] = sanitize_custom_config[:elements].dup
+sanitize_custom_config[:elements].push 'font'
 
 class QAMail < Sinatra::Base
   helpers Sinatra::Streaming
@@ -114,11 +116,13 @@ get '/show_letter' do
   else
     parsed_letter = Mail.read_from_string(@letter.raw)
     @body = parsed_letter.body.decoded
+    if parsed_letter.content_type.include? 'text/plain' then @need_pre_tag=true end
     parsed_letter.parts.each do |part|
       if part.content_type.include?'text/html'
         @body = part.body.decoded
       elsif (part.content_type.include?'text/plain' and @body == nil)
         @body = part.body.decoded
+        @need_pre_tag=true
       end
     end
     @body = @body.force_encoding 'utf-8'
