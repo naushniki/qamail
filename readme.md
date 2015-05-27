@@ -11,9 +11,11 @@ http://qamail.ala.se
 To Do List
 ------------
 
+* Make the installation process simplier
 * Asynchronous notifications about new messages
 * Message forwarding / replying
 * Properly display multipart e-mails.
+* Use proper HTTP return codes for error handling in API
 
 Installation
 ------------

@@ -6,4 +6,5 @@ letter_import.pid
 puma.pid
 puma_development.sh
 puma.sh
+puma_st.sh
 start.sh
