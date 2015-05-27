@@ -2,11 +2,14 @@ require './base.rb'
 require './api.rb'
 require './notify.rb'
 require 'digest/sha1'
+require 'sanitize'
+
+sanitize_custom_config = Sanitize::Config::RELAXED.dup
+sanitize_custom_config[:remove_contents] = true
 
 class QAMail < Sinatra::Base
   helpers Sinatra::Streaming
 end
-
 
 before do
   cache_control :private, :must_revalidate, :max_age => 0
@@ -87,6 +90,14 @@ get '/show_mailbox' do
     erb :oops
   else
     @letters = Letter.where(:mailbox_id => @mailbox.id).order(written_at: :desc).select([:id, :from, :subject, :written_at])
+ 
+    #Protect from XSS in letter subject
+    @letters.each do |letter|
+      if letter.subject != nil
+        letter.subject = letter.subject.to_s.gsub('<', '&lt;').gsub('>', '&gt;')
+      end
+    end
+
     etag @mailbox.etag
     erb :show_mailbox
   end
@@ -94,6 +105,7 @@ end
 
 get '/show_letter' do
   @letter = Session.where(:session_key => params[:session_key]).first.mailboxes.where(:address => params[:address]).first.letters.where(:id => params[:id]).first
+  @letter.subject = @letter.subject.to_s.gsub('<', '&lt;').gsub('>', '&gt;')
   @session_key = params[:session_key]
   @address = params[:address]
   if @letter == nil then
@@ -110,6 +122,7 @@ get '/show_letter' do
       end
     end
     @body = @body.force_encoding 'utf-8'
+    @body = Sanitize.clean(@body, sanitize_custom_config)
     cache_control :private, :must_revalidate, :max_age => 31536000
     etag Digest::SHA1.hexdigest(@letter.raw)
     erb :show_letter, :layout => :no_css
