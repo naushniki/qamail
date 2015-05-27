@@ -8,5 +8,7 @@
 </body>
 
 <p>
-<pre><%= @body %></pre>
+<% if @need_pre_tag %> <pre> <% end %>
+<%= @body %>
+<% if @need_pre_tag %> </pre> <% end %>
 </p>
