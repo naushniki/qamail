@@ -25,7 +25,7 @@ notify_stream.onmessage = function (message) {
 <tbody> 
 <% @letters.each do |letter| %>
   <tr>
-  <td valign="top"><a target = "letter" href="/show_letter?id=<%= letter.id%>&session_key=<%= @mailbox.session.session_key%>&address=<%= @mailbox.address%>"><%= letter.subject || 'no subject' %></a></td>
+  <td valign="top"><a target = "letter" href="/show_letter?id=<%= letter.id%>&session_key=<%= @mailbox.session.session_key%>&address=<%= @mailbox.address%>"><%= letter.subject || '<i>no subject</i>' %></a></td>
   <td valign="top"><%= letter.from %></td>
   <td valign="top"><%= letter.written_at %></td>
   </tr>

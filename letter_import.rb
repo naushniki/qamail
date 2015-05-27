@@ -6,7 +6,7 @@ pidfile = File.new(($settings['app_root_directory'] + "/letter_import.pid"),  "w
 pidfile.truncate(0)
 pidfile.write(Process.pid)
 pidfile.close
-log = Logger.new ($settings['app_root_directory'] + "log/import.log")
+log = Logger.new ($settings['app_root_directory'] + "/log/import.log")
 dir = $settings['maildir'] + "/new"
 Dir.chdir(dir)
 while(1 == 1) do
