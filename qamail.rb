@@ -8,6 +8,7 @@ sanitize_custom_config = Sanitize::Config::RELAXED.dup
 sanitize_custom_config[:remove_contents] = true
 sanitize_custom_config[:elements] = sanitize_custom_config[:elements].dup
 sanitize_custom_config[:elements].push 'font'
+sanitize_custom_config[:elements].push 'center'
 
 class QAMail < Sinatra::Base
   helpers Sinatra::Streaming
