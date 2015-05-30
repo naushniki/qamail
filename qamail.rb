@@ -4,11 +4,7 @@ require './notify.rb'
 require 'digest/sha1'
 require 'sanitize'
 
-sanitize_custom_config = Sanitize::Config::RELAXED.dup
-sanitize_custom_config[:remove_contents] = true
-sanitize_custom_config[:elements] = sanitize_custom_config[:elements].dup
-sanitize_custom_config[:elements].push 'font'
-sanitize_custom_config[:elements].push 'center'
+sanitize_custom_config = Sanitize::Config.merge(Sanitize::Config::RELAXED, :elements        => Sanitize::Config::RELAXED[:elements] + ['font', 'center'])
 
 class QAMail < Sinatra::Base
   helpers Sinatra::Streaming
