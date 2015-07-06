@@ -112,18 +112,28 @@ get '/show_letter' do
     erb :oops
   else
     parsed_letter = Mail.read_from_string(@letter.raw)
-    @body = parsed_letter.body.decoded
-    if parsed_letter.content_type.include? 'text/plain' then @need_pre_tag=true end
-    parsed_letter.parts.each do |part|
-      if part.content_type.include?'text/html'
-        @body = part.body.decoded
-      elsif (part.content_type.include?'text/plain' and @body == nil)
-        @body = part.body.decoded
+    if parsed_letter.parts.count == 0
+      if parsed_letter.content_type.include? 'text/html'
+        @body = parsed_letter.body.decoded
+      elsif parsed_letter.content_type.include? 'text/plain'
         @need_pre_tag=true
+        @body = parsed_letter.body.decoded
+      end
+    else
+      parsed_letter.parts.each do |part|
+        if part.content_type.include?'text/html'
+          @body = part.body.decoded
+          @need_pre_tag=false
+        elsif (part.content_type.include?'text/plain' and @body == nil)
+          @body = part.body.decoded
+          @need_pre_tag=true
+        end
       end
     end
-    @body = @body.force_encoding 'utf-8'
-    @body = Sanitize.clean(@body, sanitize_custom_config)
+    if @body
+      @body = @body.force_encoding 'utf-8'
+      @body = Sanitize.clean(@body, sanitize_custom_config)
+    end
     cache_control :private, :must_revalidate, :max_age => 31536000
     etag Digest::SHA1.hexdigest(@letter.raw)
     erb :show_letter, :layout => :no_css
