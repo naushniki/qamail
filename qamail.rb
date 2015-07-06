@@ -113,6 +113,7 @@ get '/show_letter' do
   else
     parsed_letter = Mail.read_from_string(@letter.raw)
     @body = parsed_letter.body.decoded
+    if parsed_letter.content_type.include? 'text/plain' then @need_pre_tag=true end
     parsed_letter.parts.each do |part|
       if part.content_type.include?'text/html'
         @body = part.body.decoded
@@ -122,7 +123,6 @@ get '/show_letter' do
       end
     end
     @body = @body.force_encoding 'utf-8'
-    @body = @body.encode("utf-8", "binary", :undef => :replace)
     @body = Sanitize.clean(@body, sanitize_custom_config)
     cache_control :private, :must_revalidate, :max_age => 31536000
     etag Digest::SHA1.hexdigest(@letter.raw)
