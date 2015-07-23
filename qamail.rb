@@ -113,20 +113,23 @@ get '/show_letter' do
   else
     parsed_letter = Mail.read_from_string(@letter.raw)
     if parsed_letter.parts.count == 0
-      if parsed_letter.content_type.include? 'text/html'
+      if parsed_letter.content_type.include? 'text/html' and params[:prefer_text]!='yes'
         @body = parsed_letter.body.decoded
       elsif parsed_letter.content_type.include? 'text/plain'
-        @need_pre_tag=true
+        @is_plain_text=true
         @body = parsed_letter.body.decoded
       end
     else
       parsed_letter.parts.each do |part|
-        if part.content_type.include?'text/html'
+        if part.content_type.include?'text/html' and params[:prefer_text]!='yes'
           @body = part.body.decoded
-          @need_pre_tag=false
-        elsif (part.content_type.include?'text/plain' and @body == nil)
-          @body = part.body.decoded
-          @need_pre_tag=true
+          @is_plain_text=false
+        elsif (part.content_type.include?'text/plain')
+          if @body == nil
+            @body = part.body.decoded
+            @is_plain_text=true
+          end
+          @plain_text_available = true
         end
       end
     end
