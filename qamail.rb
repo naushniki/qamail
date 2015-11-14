@@ -166,7 +166,7 @@ get '/new_session' do
   session = create_session
   create_mailbox(session)
   response.set_cookie "session_key", {:value => session.session_key, :domain => $settings['domain'], :expires => (Time.now + 60*60*24*365*10)}
-  redirect "/show_session?session_key=#{session.session_key}"
+  redirect "/"
 end
 
 get '/new_mailbox' do
@@ -176,8 +176,10 @@ get '/new_mailbox' do
 end
 
 get '/' do
-  if request.cookies['session_key'] and Session.where(:session_key => request.cookies['session_key']) 
-    redirect "/show_session?session_key=#{request.cookies['session_key']}"
+  if request.cookies['session_key'] and session=Session.where(:session_key => request.cookies['session_key']) 
+    @newest_mailbox = session.first.mailboxes.last
+    @session_key = request.cookies['session_key']
+    erb :show_session
   else
     redirect '/new_session'
   end
