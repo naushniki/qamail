@@ -8,3 +8,4 @@ puma_development.sh
 puma.sh
 puma_st.sh
 start.sh
+*.orig
