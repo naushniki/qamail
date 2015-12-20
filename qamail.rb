@@ -3,6 +3,9 @@ require './api.rb'
 require './notify.rb'
 require 'digest/sha1'
 require 'sanitize'
+require './extra_mail_tools.rb'
+
+include ExtraMailTools
 
 sanitize_custom_config = Sanitize::Config.merge(Sanitize::Config::RELAXED, :elements        => Sanitize::Config::RELAXED[:elements] + ['font', 'center'])
 
@@ -119,6 +122,10 @@ get '/show_letter' do
         @is_plain_text=true
         @body = parsed_letter.body.decoded
       end
+      encoding=detect_letter_encoding(parsed_letter)
+      if encoding==nil
+        encoding='utf-8' #If we cannot detect encoding, we assume it's UTF-8
+      end
     else
       parsed_letter.parts.each do |part|
         if part.content_type.include?'text/html' and params[:prefer_text]!='yes'
@@ -131,10 +138,14 @@ get '/show_letter' do
           end
           @plain_text_available = true
         end
+        encoding=detect_part_encoding(part)
+        if encoding==nil
+          encoding='utf-8' #If we cannot detect encoding, we assume it's UTF-8
+        end
       end
     end
     if @body
-      @body = @body.force_encoding 'utf-8'
+      @body.force_encoding encoding
       @body = Sanitize.clean(@body, sanitize_custom_config)
     end
     cache_control :private, :must_revalidate, :max_age => 31536000
