@@ -1,7 +1,11 @@
 module ExtraMailTools
   
   def detect_part_encoding(part)
-    tags = part.content_type.split(' ')
+    begin
+      tags = part.content_type.split(' ')
+    rescue
+      return nil
+    end
     tags.each do |tag|
       if tag =~ /^charset=/i
         tag.slice! "charset="
