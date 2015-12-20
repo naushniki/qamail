@@ -7,7 +7,9 @@ require './extra_mail_tools.rb'
 
 include ExtraMailTools
 
-sanitize_custom_config = Sanitize::Config.merge(Sanitize::Config::RELAXED, :elements        => Sanitize::Config::RELAXED[:elements] + ['font', 'center'])
+sanitize_custom_config = Sanitize::Config.merge(Sanitize::Config::RELAXED,
+                                                {:elements => (Sanitize::Config::RELAXED[:elements] + ['font', 'center']),
+                                                 :add_attributes =>  {'a' => {'target' => '_blank'}}})
 
 class QAMail < Sinatra::Base
   helpers Sinatra::Streaming
@@ -43,7 +45,7 @@ class Mailbox
     if mailbox_index == 0 then return nil
     else
       return mailboxes[mailbox_index - 1].address
-    end 
+    end
   end
 
   def next_mailbox_address
@@ -51,7 +53,7 @@ class Mailbox
     mailboxes = session.mailboxes.order(id: :asc)
     mailbox_index = mailboxes.find_index { |mailbox| mailbox.address == self.address }
     if (a = mailboxes[mailbox_index + 1]) == nil then return nil
-    else 
+    else
       return a.address
     end
   end
@@ -92,7 +94,7 @@ get '/show_mailbox' do
     erb :oops
   else
     @letters = Letter.where(:mailbox_id => @mailbox.id).order(written_at: :desc).select([:id, :from, :subject, :written_at])
- 
+
     #Protect from XSS in letter subject
     @letters.each do |letter|
       if letter.subject != nil
@@ -187,7 +189,7 @@ get '/new_mailbox' do
 end
 
 get '/' do
-  if request.cookies['session_key'] and session=Session.where(:session_key => request.cookies['session_key']) 
+  if request.cookies['session_key'] and session=Session.where(:session_key => request.cookies['session_key'])
     @newest_mailbox = session.first.mailboxes.last
     @session_key = request.cookies['session_key']
     erb :show_session
