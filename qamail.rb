@@ -6,7 +6,6 @@ require 'sanitize'
 require './extra_mail_tools.rb'
 require './authorization.rb'
 include ExtraMailTools
-include QamailAuthorization
 
 sanitize_custom_config = Sanitize::Config.merge(Sanitize::Config::RELAXED,
                                                 {:elements => (Sanitize::Config::RELAXED[:elements] + ['font', 'center']),
@@ -89,7 +88,7 @@ get '/favicon.ico' do
 end
 
 get '/show_mailbox' do
-  @mailbox = user_session(request).mailboxes.where(:address => params[:address]).first
+  @mailbox = user_session(request, params).mailboxes.where(:address => params[:address]).first
   if @mailbox == nil then
     status 404
     erb :oops
@@ -109,7 +108,7 @@ get '/show_mailbox' do
 end
 
 get '/show_letter' do
-  @letter = user_session(request).mailboxes.where(:address => params[:address]).first.letters.where(:id => params[:id]).first
+  @letter = user_session(request, params).mailboxes.where(:address => params[:address]).first.letters.where(:id => params[:id]).first
   @letter.subject = @letter.subject.to_s.gsub('<', '&lt;').gsub('>', '&gt;')
   @session_key = params[:session_key]
   @address = params[:address]
@@ -158,7 +157,7 @@ get '/show_letter' do
 end
 
 get '/show_raw_letter' do
-  @letter = user_session(request).mailboxes.where(:address => params[:address]).first.letters.where(:id => params[:id]).first
+  @letter = user_session(request, params).mailboxes.where(:address => params[:address]).first.letters.where(:id => params[:id]).first
   if @letter == nil then
     status 404
     erb :oops
@@ -171,8 +170,9 @@ get '/show_raw_letter' do
 end
 
 get '/show_session' do
-  @newest_mailbox = user_session(request).mailboxes.last
-  @session_key = params[:session_key]
+  session = user_session(request, params)
+  @newest_mailbox = session.mailboxes.last
+  @session_key = session.session_key
   erb :show_session
 end
 
@@ -184,16 +184,16 @@ get '/new_session' do
 end
 
 get '/new_mailbox' do
-  session = user_session(request)
+  session = user_session(request, params)
   create_mailbox(session)
-  redirect "/show_session?session_key=#{session.session_key}"
+  redirect "/"
 end
 
 get '/' do
-  session=user_session(request)
+  session=user_session(request, params)
   if session!=nil
     @newest_mailbox = session.mailboxes.last
-    @session_key = request.cookies['session_key']
+    @session_key = session.session_key
     erb :show_session
   else
     redirect '/new_session'
@@ -201,13 +201,13 @@ get '/' do
 end
 
 get '/empty_mailbox' do
-  user_session(request).mailboxes.where(:address => params[:address]).first.letters.destroy_all
+  user_session(request, params).mailboxes.where(:address => params[:address]).first.letters.destroy_all
   redirect "/show_mailbox?session_key=#{params[:session_key]}&address=#{params[:address]}"
 end
 
 get '/reply_to_letter' do
   begin
-    @letter = user_session(request).mailboxes.where(:address => params[:address]).first.letters.where(:id => params[:id]).first
+    @letter = user_session(request, params).mailboxes.where(:address => params[:address]).first.letters.where(:id => params[:id]).first
   rescue
     status 404
     erb :oops
@@ -221,7 +221,7 @@ end
 
 post '/send_reply' do
 
-  mailbox = user_session(request).mailboxes.where(:address => params[:from_address]).first
+  mailbox = user_session(request, params).mailboxes.where(:address => params[:from_address]).first
   if mailbox == nil then
     status 404
     erb :oops
