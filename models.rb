@@ -5,6 +5,7 @@ end
 
 class Mailbox < ActiveRecord::Base
   has_many :letters
+  has_many :outgoing_letters
   belongs_to :session
   validates :address, uniqueness: true
 end
@@ -19,4 +20,10 @@ end
 
 class OutgoingLetter < ActiveRecord::Base
   belongs_to :mailbox
+  attr_accessor :send_attempts
+  attr_accessor :last_delivery_attempt_time
+  after_initialize do
+    send_attempts=0
+    last_delivery_attempt_time=nil
+  end
 end

@@ -4,8 +4,9 @@ require './notify.rb'
 require 'digest/sha1'
 require 'sanitize'
 require './extra_mail_tools.rb'
-
+require './authorization.rb'
 include ExtraMailTools
+include QamailAuthorization
 
 sanitize_custom_config = Sanitize::Config.merge(Sanitize::Config::RELAXED,
                                                 {:elements => (Sanitize::Config::RELAXED[:elements] + ['font', 'center']),
@@ -88,7 +89,7 @@ get '/favicon.ico' do
 end
 
 get '/show_mailbox' do
-  @mailbox = Session.where(:session_key => params[:session_key]).first.mailboxes.where(:address => params[:address]).first
+  @mailbox = user_session(request).mailboxes.where(:address => params[:address]).first
   if @mailbox == nil then
     status 404
     erb :oops
@@ -108,7 +109,7 @@ get '/show_mailbox' do
 end
 
 get '/show_letter' do
-  @letter = Session.where(:session_key => params[:session_key]).first.mailboxes.where(:address => params[:address]).first.letters.where(:id => params[:id]).first
+  @letter = user_session(request).mailboxes.where(:address => params[:address]).first.letters.where(:id => params[:id]).first
   @letter.subject = @letter.subject.to_s.gsub('<', '&lt;').gsub('>', '&gt;')
   @session_key = params[:session_key]
   @address = params[:address]
@@ -157,7 +158,7 @@ get '/show_letter' do
 end
 
 get '/show_raw_letter' do
-  @letter = Session.where(:session_key => params[:session_key]).first.mailboxes.where(:address => params[:address]).first.letters.where(:id => params[:id]).first
+  @letter = user_session(request).mailboxes.where(:address => params[:address]).first.letters.where(:id => params[:id]).first
   if @letter == nil then
     status 404
     erb :oops
@@ -170,7 +171,7 @@ get '/show_raw_letter' do
 end
 
 get '/show_session' do
-  @newest_mailbox = Session.where(:session_key => params[:session_key]).first.mailboxes.last
+  @newest_mailbox = user_session(request).mailboxes.last
   @session_key = params[:session_key]
   erb :show_session
 end
@@ -183,14 +184,15 @@ get '/new_session' do
 end
 
 get '/new_mailbox' do
-  session = Session.where(:session_key => params[:session_key]).first
+  session = user_session(request)
   create_mailbox(session)
   redirect "/show_session?session_key=#{session.session_key}"
 end
 
 get '/' do
-  if request.cookies['session_key'] and session=Session.where(:session_key => request.cookies['session_key'])
-    @newest_mailbox = session.first.mailboxes.last
+  session=user_session(request)
+  if session!=nil
+    @newest_mailbox = session.mailboxes.last
     @session_key = request.cookies['session_key']
     erb :show_session
   else
@@ -199,6 +201,50 @@ get '/' do
 end
 
 get '/empty_mailbox' do
-  Session.where(:session_key => params[:session_key]).first.mailboxes.where(:address => params[:address]).first.letters.destroy_all
+  user_session(request).mailboxes.where(:address => params[:address]).first.letters.destroy_all
   redirect "/show_mailbox?session_key=#{params[:session_key]}&address=#{params[:address]}"
+end
+
+get '/reply_to_letter' do
+  begin
+    @letter = user_session(request).mailboxes.where(:address => params[:address]).first.letters.where(:id => params[:id]).first
+  rescue
+    status 404
+    erb :oops
+    break
+  end
+  @mailbox = @letter.mailbox
+  @to = @letter.from
+  @reply_text='Placeholder reply text'
+  erb :reply_to_letter
+end
+
+post '/send_reply' do
+
+  mailbox = user_session(request).mailboxes.where(:address => params[:from_address]).first
+  if mailbox == nil then
+    status 404
+    erb :oops
+    break
+  end
+
+  letter_file = Mail.new(
+    :sender => (params[:senders_name].to_s + ' <' + mailbox.address + '>'),
+    :to => params[:to],
+    :CC => params[:CC],
+    :subject => params[:subject],
+    :body => params[:message]
+  )
+
+  letter = OutgoingLetter.new
+  letter.mailbox_id=mailbox.id
+  letter.from = letter_file.from
+  letter.subject = letter_file.subject
+  letter.to = letter_file.to.join(',')
+  letter.written_at = Time.now
+  letter.raw=letter_file.to_s
+  letter.save
+
+  redirect "/show_letter?id=#{mailbox.letters.last.id}&address=#{mailbox.address}"
+
 end
