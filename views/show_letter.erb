@@ -1,0 +1,17 @@
+<body style="background-color:white">
+<p style="font-family:serif">
+<b style="font-weight:bold">From: </b> <%= @letter.from %><br>
+<b style="font-weight:bold">Date: </b> <%= @letter.written_at %><br>
+<b style="font-weight:bold">Subject: </b> <%= @letter.subject %><br>
+<a style="color:blue; text-decoration:underline;" href="/show_raw_letter?session_key=<%= @session_key %>&id=<%= @letter.id %>&address=<%= @address %>">Show raw message</a>
+<% if @plain_text_available and not @is_plain_text%> <a style="color:blue; text-decoration:underline;" href="/show_letter?session_key=<%= @session_key %>&id=<%= @letter.id %>&address=<%= @address %>&prefer_text=yes">Show plain text</a> <% end %>
+<% if @plain_text_available and @is_plain_text%> <a style="color:blue; text-decoration:underline;" href="/show_letter?session_key=<%= @session_key %>&id=<%= @letter.id %>&address=<%= @address %>">Show HTML version</a> <% end %>
+<a style="color:blue; text-decoration:underline;" href="/reply_to_letter?session_key=<%= @session_key %>&id=<%= @letter.id %>&address=<%= @address %>">Reply</a>
+</p>
+</body>
+
+<p>
+<% if @is_plain_text %> <pre> <% end %>
+<%= @body %>
+<% if @is_plain_text %> </pre> <% end %>
+</p>

@@ -1,0 +1,16 @@
+<body style="background-color:white">
+<p style="font-family:serif">
+  <table>
+    <form action="/send_reply" method="post">
+      <tr><td>From (name):</td><td><input type="text" name="senders_name"></td></tr>
+      <tr><td>To:</td><td><input type="text" name="to" value="<%= @to %>"></td></tr>
+      <tr><td>CC:</td><td><input type="text" name="CC"></td></tr>
+      <tr><td>Subject:</td><td><input type="text" name="subject" value="<%= 'Re: ' + @letter.subject  %>"></td></tr>
+<tr><td>Message:</td><td><textarea name="message" resize="both" rows="20" cols="70"><%= @reply_text %></textarea></td></tr>
+<tr colspan=2><input type="hidden" name="session_key" value="<%= @mailbox.session.session_key %>">
+<input type="hidden" name="from_address" value="<%= @mailbox.address %>">
+<td><input type="submit" value="Send"></td></tr>
+</form>
+</table>
+</p>
+
