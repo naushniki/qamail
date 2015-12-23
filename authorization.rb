@@ -1,13 +1,9 @@
-module QamailAuthorization
-
-  def user_session(request)
-    begin
-      return Session.find_by(:session_key => request.cookies['session_key'])
-    rescue
-      return Session.find_by(:session_key => request.params[:session_key])
-    rescue
-      return nil
-    end
+def user_session(request, params)
+  session = Session.find_by(:session_key => params[:session_key])
+  if session != nil
+    return session
+  else
+    session = Session.find_by(:session_key => request.cookies['session_key'])
+    return session
   end
-
 end
