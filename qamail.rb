@@ -15,6 +15,8 @@ class QAMail < Sinatra::Base
   helpers Sinatra::Streaming
 end
 
+set :public_folder, 'static'
+
 before do
   cache_control :private, :must_revalidate, :max_age => 0
 end
@@ -75,16 +77,6 @@ def create_session
   24.times{session.session_key << [('0'..'9'),('A'..'Z'),('a'..'z')].map{ |i| i.to_a }.flatten.sample}
   session.save
   return session
-end
-
-get '/static/:file' do
-  cache_control :public, :must_revalidate, :max_age => 31536000
-  etag Digest::SHA1.hexdigest(File.read('./static/'+params[:file]))
-  send_file('./static/'+params[:file])
-end
-
-get '/favicon.ico' do
-  redirect "/static/favicon.ico"
 end
 
 get '/show_mailbox' do
@@ -187,6 +179,15 @@ get '/new_mailbox' do
   session = user_session
   create_mailbox(session)
   redirect "/"
+end
+
+get '/' do
+  @session=user_session
+  if @session!=nil
+    erb :"/new/main", :layout => nil
+  else
+    redirect '/new_session'
+  end
 end
 
 get '/old_ui' do
