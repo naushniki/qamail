@@ -1,6 +1,6 @@
 QA Mail
 =============
-QA Mail lets you create unlimited number of disposable mailboxes and read letters in a cozy web-interface. It is useful for testing web applications that deal with e-mail.  
+QA Mail lets you create unlimited number of disposable mailboxes and read letters in a cozy web-interface. It is useful for testing web applications that deal with e-mail.
 QA Mail can be used both for manual testing via a web user interface and also for automated testing, using its REST API.
 
 Live demo
@@ -19,11 +19,11 @@ To Do List
 
 Installation
 ------------
-* Configure the mail delivery agent.  
-QA mail needs an external mail delivery agent (MDA). The MDA must be configured so that messages to any address on a specific domain will go into one maildir. Than you should point QA Mail to this Maildir by specifying it in settings.yml.  
+* Configure the mail delivery agent.
+QA mail needs an external mail delivery agent (MDA). The MDA must be configured so that messages to any address on a specific domain will go into one maildir. Than you should point QA Mail to this Maildir by specifying it in settings.yml.
 If you wish yo use Postfix, its configuration is described in the section "How to configure Postfix to work with QA Mail".
-* Install postgresql. Create a user, give this user privilage to create databases.  
-* Fill in settings.yml.example and rename it to settings.yml.  
+* Install postgresql. Create a user, give this user privilage to create databases.
+* Fill in settings.yml.example and rename it to settings.yml.
 *  Install [rvm](https://rvm.io/rvm/install) (if you don't already have it)
 *  Install fresh ruby
 ```
@@ -39,23 +39,23 @@ bundle install
 rake db:create
 rake db:migrate
 ```
-* Start the importer:  
+* Start the importer:
 ```
 ruby letter_import.rb
 ```
-* Start the web interface:  
+* Start the web interface:
 ```
 bundle exec puma -e production -d
 ```
 
 
-How to configure Postfix to work with QA Mail 
+How to configure Postfix to work with QA Mail
 ------------
 
-This manual will help you configure Postfix to work with QA Mail on Debian 7 (should also work for Ubuntu and other debian-based Linux distros).  
-First, you should tie your domain name to the IP address of your server. You don't need an MX DNS record, a simple A record is sufficient. If you don't have a domain name, you can get one for free here: http://freedns.afraid.org/  
+This manual will help you configure Postfix to work with QA Mail on Debian 7 (should also work for Ubuntu and other debian-based Linux distros).
+First, you should tie your domain name to the IP address of your server. You don't need an MX DNS record, a simple A record is sufficient. If you don't have a domain name, you can get one for free here: http://freedns.afraid.org/
 
-* Install Postfix  
+* Install Postfix
 ```
 apt-get install postfix postfix-pcre
 ```
@@ -67,7 +67,7 @@ Enter your domain.
 postconf -e "home_mailbox = Maildir/"
 postconf -e "mailbox_command = "
 ```
-Edit file /etc/postfix/main.cf  
+Edit file /etc/postfix/main.cf
 Add or edit the following lines:
 ```
 myhostname = YOUR_DOMAIN_NAME
@@ -77,8 +77,8 @@ relay_domains = YOUR_DOMAIN_NAME
 virtual_alias_maps = pcre:/etc/postfix/wildcard.pcre
 ```
 
-* Configure address rewriting  
-Put the following into the file /etc/postfix/wildcard.pcre:  
+* Configure address rewriting
+Put the following into the file /etc/postfix/wildcard.pcre:
 (This is for domain name example.example.com, change it for your domain name.)
 ```
 /^\w+\@example\.example\.com$/ qamail
@@ -93,10 +93,10 @@ Put the following into the file /etc/postfix/wildcard.pcre:
 ```
 adduser qamail
 ```
-Now configure QA Mail. The Maildir, which you should specify in settings.yml is /home/qamail/Maildir/  
-QA Mail itself must be run by user qamail.  
-Also, make sure that your firewall allows TCP connections to port 25.  
-  
+Now configure QA Mail. The Maildir, which you should specify in settings.yml is /home/qamail/Maildir/
+QA Mail itself must be run by user qamail.
+Also, make sure that your firewall allows TCP connections to port 25.
+
 List of REST API methods
 ------------
 
@@ -110,15 +110,15 @@ Returns a new session with one mailbox.
 
 * **Method:**
 
-`GET`
-  
+`PUT`
+
 *  **URL Params**
 
 None
 
 * **Sample Request:**
 ```
-GET /api/create_session HTTP/1.1
+PUT /api/create_session HTTP/1.1
 ```
 
 * **Sample Response:**
@@ -144,11 +144,11 @@ Returns a list of mailboxes for a given session.
 * **Method:**
 
 `GET`
-  
+
 *  **URL Params**
 
    **Required:**
- 
+
    `session_key=[string]`
 
 * **Sample Request:**
@@ -190,17 +190,17 @@ Creates a new mailbox for a given session.
 
 * **Method:**
 
-`GET`
-  
+`PUT`
+
 *  **URL Params**
 
    **Required:**
- 
+
    `session_key=[string]`
 
 * **Sample Request:**
 ```
-GET /api/create_mailbox?session_key=G3nfwWElCcXHf8ZHXEJgWf8A HTTP/1.1
+PUT /api/create_mailbox?session_key=G3nfwWElCcXHf8ZHXEJgWf8A HTTP/1.1
 ```
 
 * **Sample Response:**
@@ -223,12 +223,12 @@ Returns a list of letters in a given mailbox, without letter content.
 * **Method:**
 
 `GET`
-  
+
 *  **URL Params**
 
    **Required:**
- 
-   `session_key=[string]`  
+
+   `session_key=[string]`
    `address=[string]`
 
 * **Sample Request:**
@@ -263,14 +263,14 @@ Shows letter content
 * **Method:**
 
 `GET`
-  
+
 *  **URL Params**
 
    **Required:**
- 
-   `session_key=[string]`  
-   `address=[string]`  
-   `letter_id=[integer]`  
+
+   `session_key=[string]`
+   `address=[string]`
+   `letter_id=[integer]`
 
 * **Sample Request:**
 ```
@@ -318,18 +318,18 @@ Deletes all letters in a given mailbox.
 
 * **Method:**
 
-`GET`
-  
+`DELETE`
+
 *  **URL Params**
 
    **Required:**
- 
-   `session_key=[string]`  
+
+   `session_key=[string]`
    `address=[string]`
 
 * **Sample Request:**
 ```
-GET /empty_mailbox?session_key=Ry1Nc1wehF99t6y6DRQ8v8Uc&address=5y7yuva@qamail.ala.se HTTP/1.1
+DELETE /api/empty_mailbox?session_key=Ry1Nc1wehF99t6y6DRQ8v8Uc&address=5y7yuva@qamail.ala.se HTTP/1.1
 ```
 
 * **Sample Response:**

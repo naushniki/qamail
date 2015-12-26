@@ -1,4 +1,4 @@
-get '/api/create_session' do
+put '/api/create_session' do
   @session = create_session
   create_mailbox(@session)
   builder :show_session
@@ -9,7 +9,7 @@ get '/api/list_mailboxes' do
   builder :show_session
 end
 
-get '/api/create_mailbox' do
+put '/api/create_mailbox' do
   session = Session.where(:session_key => params[:session_key]).first
   @mailbox = create_mailbox(session)
   builder :show_mailbox
@@ -26,7 +26,7 @@ get '/api/show_letter' do
   builder :show_letter
 end
 
-get '/api/empty_mailbox' do
+delete '/api/empty_mailbox' do
   Session.where(:session_key => params[:session_key]).first.mailboxes.where(:address => params[:address]).first.letters.destroy_all
   status 200
   body ''
