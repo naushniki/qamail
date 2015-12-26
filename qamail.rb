@@ -88,7 +88,7 @@ get '/favicon.ico' do
 end
 
 get '/show_mailbox' do
-  @mailbox = user_session(request, params).mailboxes.where(:address => params[:address]).first
+  @mailbox = user_session.mailboxes.where(:address => params[:address]).first
   if @mailbox == nil then
     status 404
     erb :oops
@@ -108,7 +108,7 @@ get '/show_mailbox' do
 end
 
 get '/show_letter' do
-  @letter = user_session(request, params).mailboxes.where(:address => params[:address]).first.letters.where(:id => params[:id]).first
+  @letter = user_session.mailboxes.where(:address => params[:address]).first.letters.where(:id => params[:id]).first
   @letter.subject = @letter.subject.to_s.gsub('<', '&lt;').gsub('>', '&gt;')
   @session_key = params[:session_key]
   @address = params[:address]
@@ -157,7 +157,7 @@ get '/show_letter' do
 end
 
 get '/show_raw_letter' do
-  @letter = user_session(request, params).mailboxes.where(:address => params[:address]).first.letters.where(:id => params[:id]).first
+  @letter = user_session.mailboxes.where(:address => params[:address]).first.letters.where(:id => params[:id]).first
   if @letter == nil then
     status 404
     erb :oops
@@ -170,7 +170,7 @@ get '/show_raw_letter' do
 end
 
 get '/show_session' do
-  session = user_session(request, params)
+  session = user_session
   @newest_mailbox = session.mailboxes.last
   @session_key = session.session_key
   erb :show_session
@@ -184,13 +184,13 @@ get '/new_session' do
 end
 
 get '/new_mailbox' do
-  session = user_session(request, params)
+  session = user_session
   create_mailbox(session)
   redirect "/"
 end
 
-get '/' do
-  session=user_session(request, params)
+get '/old_ui' do
+  session=user_session
   if session!=nil
     @newest_mailbox = session.mailboxes.last
     @session_key = session.session_key
@@ -201,13 +201,13 @@ get '/' do
 end
 
 get '/empty_mailbox' do
-  user_session(request, params).mailboxes.where(:address => params[:address]).first.letters.destroy_all
+  user_session.mailboxes.where(:address => params[:address]).first.letters.destroy_all
   redirect "/show_mailbox?session_key=#{params[:session_key]}&address=#{params[:address]}"
 end
 
 get '/reply_to_letter' do
   begin
-    @letter = user_session(request, params).mailboxes.where(:address => params[:address]).first.letters.where(:id => params[:id]).first
+    @letter = user_session.mailboxes.where(:address => params[:address]).first.letters.where(:id => params[:id]).first
   rescue
     status 404
     erb :oops
@@ -221,7 +221,7 @@ end
 
 post '/send_reply' do
 
-  mailbox = user_session(request, params).mailboxes.where(:address => params[:from_address]).first
+  mailbox = user_session.mailboxes.where(:address => params[:from_address]).first
   if mailbox == nil then
     status 404
     erb :oops
