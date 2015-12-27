@@ -104,6 +104,11 @@ get '/show_letter' do
   @letter.subject = @letter.subject.to_s.gsub('<', '&lt;').gsub('>', '&gt;')
   @session_key = params[:session_key]
   @address = params[:address]
+  if defined? params[:no_header]
+    @render_header = false
+  else
+    @render_header = true
+  end
   if @letter == nil then
     status 404
     erb :oops
