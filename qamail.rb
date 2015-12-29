@@ -104,7 +104,7 @@ get '/show_letter' do
   @letter.subject = @letter.subject.to_s.gsub('<', '&lt;').gsub('>', '&gt;')
   @session_key = params[:session_key]
   @address = params[:address]
-  if defined? params[:no_header]
+  if params[:no_header].to_s=='1'
     @render_header = false
   else
     @render_header = true
@@ -113,38 +113,21 @@ get '/show_letter' do
     status 404
     erb :oops
   else
-    parsed_letter = Mail.read_from_string(@letter.raw)
-    if parsed_letter.parts.count == 0
-      if parsed_letter.content_type.include? 'text/html' and params[:prefer_text]!='yes'
-        @body = parsed_letter.body.decoded
-      elsif parsed_letter.content_type.include? 'text/plain'
-        @is_plain_text=true
-        @body = parsed_letter.body.decoded
-      end
-      encoding=detect_letter_encoding(parsed_letter)
-      if encoding==nil
-        encoding='utf-8' #If we cannot detect encoding, we assume it's UTF-8
+    parsed_letter = parse_letter(@letter)
+    if params[:prefer_text]=='yes' and parsed_letter[:plain_text]!=nil
+      @body=parsed_letter[:plain_text]
+      @plain_text_available=true
+      @is_plain_text=true
+    elsif parsed_letter[:html]!=nil
+      @body=parsed_letter[:html]
+      if parsed_letter[:plain_text]!=nil
+        @plain_text_available=true
       end
     else
-      parsed_letter.parts.each do |part|
-        if part.content_type.include?'text/html' and params[:prefer_text]!='yes'
-          @body = part.body.decoded
-          @is_plain_text=false
-        elsif (part.content_type.include?'text/plain')
-          if @body == nil
-            @body = part.body.decoded
-            @is_plain_text=true
-          end
-          @plain_text_available = true
-        end
-        encoding=detect_part_encoding(part)
-        if encoding==nil
-          encoding='utf-8' #If we cannot detect encoding, we assume it's UTF-8
-        end
-      end
+      @body=parsed_letter[:plain_text]
+      @is_plain_text=true
     end
     if @body
-      @body.force_encoding encoding
       @body = Sanitize.clean(@body, sanitize_custom_config)
     end
     cache_control :private, :must_revalidate, :max_age => 31536000
@@ -154,6 +137,11 @@ get '/show_letter' do
 end
 
 get '/show_raw_letter' do
+  if params[:no_header].to_s=='1'
+    @render_header = false
+  else
+    @render_header = true
+  end
   @letter = user_session.mailboxes.where(:address => params[:address]).first.letters.where(:id => params[:id]).first
   if @letter == nil then
     status 404

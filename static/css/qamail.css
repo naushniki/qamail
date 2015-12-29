@@ -29,7 +29,11 @@
 }
 
 .email-item-selected {
-    background: #eee;
+    background: #e9e9e9;
+}
+
+.email-item-preselected {
+    background: #f6f6f6;
 }
 
 .email-item-unread {
@@ -111,3 +115,10 @@
         height: 100%;
         width: 100%;
     }
+
+
+
+
+.pressed-button {
+    font-weight: bold;
+}
