@@ -40,6 +40,7 @@ get '/api/show_rendered_letter' do
   @parsed_letter.each do |key, value|
     value = Sanitize.clean(value, sanitize_custom_config)
   end
+  @letter.raw = @letter.raw.gsub('<', '&lt;').gsub('>', '&gt;')
   cache_control :private, :must_revalidate, :max_age => 31536000
   etag Digest::SHA1.hexdigest(@letter.raw)
   builder :show_rendered_letter
