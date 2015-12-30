@@ -6,6 +6,40 @@
 .color-primary-3 { color: #59799A }
 .color-primary-4 { color: #3E6287 }
 
+.main-grid {
+  z-index: 5;
+}
+.current_mailbox_content{
+  overflow-y: auto;
+  max-height: 100%;
+  height: 100%;
+  outline: 1px solid #ddd;
+}
+
+
+.button-xlarge {
+    font-size: 125%;
+}
+.input-xlarge {
+    font-size: 125%;
+}
+.button-delete {
+    color: white;
+    border-radius: 4px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+    background: rgb(223, 117, 20); /* this is an orange */
+}
+.button-refresh {
+    color: white;
+    border-radius: 4px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+    background: rgb(66, 184, 221); /* this is a light blue */
+}
+.home-menu{
+  z-index: 10;
+  background: white;
+}
+
 .email-item {
     padding: 0.9em 1em;
     border-bottom: 1px solid #ddd;
