@@ -5,12 +5,12 @@ var parse = function(xml) {
     return parser.xml_str2json(xml);
 };
 
-app.controller('mailboxController', function($scope, $http) {
+app.controller('mailboxController', function($scope, $http, $window, $httpParamSerializer) {
     $scope.currentMailbox = null;
     $scope.sessionMailboxes = [];
     $scope.letters = [];
     $scope.loadedLetters = {};
-    $scope.show_letter_viewer=false;
+    $scope.show_letter_viewer = false;
 
     $http({
         method: 'GET',
@@ -57,11 +57,11 @@ app.controller('mailboxController', function($scope, $http) {
         $scope.show_letter_list_preloader = true;
         $scope.this_mailbox_is_empty = false;
         $http.get('/api/show_mailbox_content?session_key=' + sessionKey + '&address=' + $scope.currentMailbox.address).success(function(result) {
-            parsed_letters=parse(result).mailbox.letter;
-            if (parsed_letters!=null){
+            parsed_letters = parse(result).mailbox.letter;
+            if (parsed_letters != null) {
                 $scope.letters = $scope.letters.concat(parse(result).mailbox.letter);
             };
-            if ($scope.letters.length===0){
+            if ($scope.letters.length === 0) {
                 $scope.this_mailbox_is_empty = true;
             };
             for (i = 0; i < $scope.letters.length; i++) {
@@ -84,7 +84,7 @@ app.controller('mailboxController', function($scope, $http) {
 
     $scope.loadLetter = function(letter) {
         return new Promise(function(resolve, reject) {
-            if (($scope.loadedLetters[letter.id]===undefined)===false){
+            if (($scope.loadedLetters[letter.id] === undefined) === false) {
                 resolve();
             } else {
                 console.log('loading letter "' + letter.subject + '"');
@@ -99,24 +99,24 @@ app.controller('mailboxController', function($scope, $http) {
 
     $scope.displayLetter = function(letter) {
         console.log('displaying letter "' + letter.subject + '"');
-         $(".letter-control-button").addClass( "pure-button-disabled" );
+        $(".letter-control-button").addClass("pure-button-disabled");
         $scope.currentLetter = letter;
         $scope.show_letter_viewer = true;
         document.getElementById("letter_content").contentWindow.document.close();
         document.getElementById("letter_content").contentWindow.document.write('<br><br><center><h1 style="font-family: sans-serif;"><font color="gray">Loading...</font></h1></center>');
-        $scope.loadLetter(letter).then(function(response){
-            if ($scope.loadedLetters[letter.id]['html_content']!==undefined){
+        $scope.loadLetter(letter).then(function(response) {
+            if ($scope.loadedLetters[letter.id]['html_content'] !== undefined) {
                 $("#html-button").removeClass("pure-button-disabled");
             };
-            if ($scope.loadedLetters[letter.id]['plain_text_content']!==undefined){
+            if ($scope.loadedLetters[letter.id]['plain_text_content'] !== undefined) {
                 $("#plain-text-button").removeClass("pure-button-disabled");
             };
             $("#raw-button").removeClass("pure-button-disabled");
             $("#reply-button").removeClass("pure-button-disabled");
 
-            if ($scope.loadedLetters[letter.id]['html_content']!==undefined){
+            if ($scope.loadedLetters[letter.id]['html_content'] !== undefined) {
                 $scope.displayHtmlLetter(letter);
-            } else if ($scope.loadedLetters[letter.id]['plain_text_content']!==undefined){
+            } else if ($scope.loadedLetters[letter.id]['plain_text_content'] !== undefined) {
                 $scope.displayPlainTextLetter(letter);
             } else {
                 $scope.displayRawLetter(letter);
@@ -126,8 +126,8 @@ app.controller('mailboxController', function($scope, $http) {
     };
 
     $scope.displayRawLetter = function(letter) {
-        if ($scope.loadedLetters[letter.id]['raw_content']!=undefined){
-            $(".letter-control-button").removeClass( "pure-button-active" );
+        if ($scope.loadedLetters[letter.id]['raw_content'] != undefined) {
+            $(".letter-control-button").removeClass("pure-button-active");
             $("#raw-button").addClass("pure-button-active");
             document.getElementById("letter_content").contentWindow.document.close();
             document.getElementById("letter_content").contentWindow.document.write($scope.loadedLetters[letter.id]['raw_content']);
@@ -135,8 +135,8 @@ app.controller('mailboxController', function($scope, $http) {
     };
 
     $scope.displayPlainTextLetter = function(letter) {
-        if ($scope.loadedLetters[letter.id]['plain_text_content']!=undefined){
-            $(".letter-control-button").removeClass( "pure-button-active" );
+        if ($scope.loadedLetters[letter.id]['plain_text_content'] != undefined) {
+            $(".letter-control-button").removeClass("pure-button-active");
             $("#plain-text-button").addClass("pure-button-active");
             document.getElementById("letter_content").contentWindow.document.close();
             document.getElementById("letter_content").contentWindow.document.write($scope.loadedLetters[letter.id]['plain_text_content']);
@@ -144,11 +144,45 @@ app.controller('mailboxController', function($scope, $http) {
     };
 
     $scope.displayHtmlLetter = function(letter) {
-        if ($scope.loadedLetters[letter.id]['html_content']!=undefined){
-            $(".letter-control-button").removeClass( "pure-button-active" );
+        if ($scope.loadedLetters[letter.id]['html_content'] != undefined) {
+            $(".letter-control-button").removeClass("pure-button-active");
             $("#html-button").addClass("pure-button-active");
             document.getElementById("letter_content").contentWindow.document.close();
             document.getElementById("letter_content").contentWindow.document.write($scope.loadedLetters[letter.id]['html_content']);
         };
+    };
+
+    $scope.fillReplyForm = function() {
+        $scope.replySendersName = null;
+        $scope.replyToAddress = $scope.currentLetter.from;
+        $scope.replyCC = null;
+        $scope.replySubject = "Re: "+$scope.currentLetter.subject;
+        $scope.replyText = '';
+        if ($scope.loadedLetters[$scope.currentLetter.id]['plain_text_for_reply'] != undefined) {
+            $scope.replyText +='\n\n';
+            $scope.replyText +='On ' + $scope.currentLetter.date + ' you wrote:\n-----------\n';
+            $scope.replyText +=  $scope.loadedLetters[$scope.currentLetter.id]['plain_text_for_reply'];
+        };
+        $window.location.href = '#reply';
+    };
+
+    $scope.sendReply = function() {
+        $http({
+            method: 'POST',
+            url: '/send_reply',
+            paramSerializer: '$httpParamSerializerJQLike',
+            params: {
+                from_address: $scope.currentMailbox.address,
+                sender: $scope.replySendersName,
+                to: $scope.replyToAddress,
+                CC: $scope.replyCC,
+                subject: $scope.replySubject,
+                message: $scope.replyText,
+                session_key: sessionKey
+            }
+        }).success(function(result) {
+            $window.location.href = '#close';
+        });
+
     };
 });
