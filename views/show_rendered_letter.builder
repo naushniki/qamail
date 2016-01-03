@@ -27,5 +27,10 @@ xml.letter do
   end
   if @parsed_letter[:plain_text]!=nil
   	xml.plain_text_content style+'<pre>'+@parsed_letter[:plain_text]+'</pre>'
+  	reply = @parsed_letter[:plain_text][0..999]
+    if @parsed_letter[:plain_text].length>1000
+      reply << "\n..."
+    end
+  	xml.plain_text_for_reply reply
   end
 end

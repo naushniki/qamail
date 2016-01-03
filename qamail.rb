@@ -239,6 +239,6 @@ post '/send_reply' do
   letter.raw=letter_file.to_s
   letter.save
 
-  redirect "/show_letter?id=#{mailbox.letters.last.id}&address=#{mailbox.address}"
+  redirect "/show_letter?id=#{mailbox.letters.last.id}&address=#{mailbox.address}", 302
 
 end
