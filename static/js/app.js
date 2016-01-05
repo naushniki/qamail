@@ -105,23 +105,24 @@ app.controller('mailboxController', function($scope, $http, $window, $httpParamS
         document.getElementById("letter_content").contentWindow.document.close();
         document.getElementById("letter_content").contentWindow.document.write('<br><br><center><h1 style="font-family: sans-serif;"><font color="gray">Loading...</font></h1></center>');
         $scope.loadLetter(letter).then(function(response) {
-            if ($scope.loadedLetters[letter.id]['html_content'] !== undefined) {
-                $("#html-button").removeClass("pure-button-disabled");
-            };
-            if ($scope.loadedLetters[letter.id]['plain_text_content'] !== undefined) {
-                $("#plain-text-button").removeClass("pure-button-disabled");
-            };
-            $("#raw-button").removeClass("pure-button-disabled");
-            $("#reply-button").removeClass("pure-button-disabled");
+            if ($scope.currentLetter == letter){
+                if ($scope.loadedLetters[letter.id]['html_content'] !== undefined) {
+                    $("#html-button").removeClass("pure-button-disabled");
+                };
+                if ($scope.loadedLetters[letter.id]['plain_text_content'] !== undefined) {
+                    $("#plain-text-button").removeClass("pure-button-disabled");
+                };
+                $("#raw-button").removeClass("pure-button-disabled");
+                $("#reply-button").removeClass("pure-button-disabled");
 
-            if ($scope.loadedLetters[letter.id]['html_content'] !== undefined) {
-                $scope.displayHtmlLetter(letter);
-            } else if ($scope.loadedLetters[letter.id]['plain_text_content'] !== undefined) {
-                $scope.displayPlainTextLetter(letter);
-            } else {
-                $scope.displayRawLetter(letter);
+                if ($scope.loadedLetters[letter.id]['html_content'] !== undefined) {
+                    $scope.displayHtmlLetter(letter);
+                } else if ($scope.loadedLetters[letter.id]['plain_text_content'] !== undefined) {
+                    $scope.displayPlainTextLetter(letter);
+                } else {
+                    $scope.displayRawLetter(letter);
+                };
             };
-
         });
     };
 
