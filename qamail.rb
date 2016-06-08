@@ -71,10 +71,13 @@ def create_mailbox(session)
   return mailbox
 end
 
-def create_session
+def create_session(request)
   session = Session.new
   session.session_key = String.new
   24.times{session.session_key << [('0'..'9'),('A'..'Z'),('a'..'z')].map{ |i| i.to_a }.flatten.sample}
+  session.ip_address=request.ip
+  session.user_agent=request.user_agent
+  session.created_at = Time.now
   session.save
   return session
 end
@@ -162,7 +165,7 @@ get '/show_session' do
 end
 
 get '/new_session' do
-  session = create_session
+  session = create_session(request)
   create_mailbox(session)
   response.set_cookie "session_key", {:value => session.session_key, :domain => $settings['domain'], :expires => (Time.now + 60*60*24*365*10)}
   redirect "/"
