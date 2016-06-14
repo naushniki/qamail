@@ -3,7 +3,7 @@ def user_session
   if session == nil
     session = Session.find_by(:session_key => self.request.cookies['session_key'])
   end
-  if Time.now - session.last_visit > 60*60
+  if session != nil and Time.now - session.last_visit > 60*60
     session.last_visit = Time.now
     session.save
   end
