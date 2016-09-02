@@ -6,6 +6,7 @@ end
 class Mailbox < ActiveRecord::Base
   has_many :letters
   has_many :outgoing_letters
+  has_many :forwarding_addresses
   belongs_to :session
   validates :address, uniqueness: true
 end
@@ -26,4 +27,8 @@ class OutgoingLetter < ActiveRecord::Base
     send_attempts=0
     last_delivery_attempt_time=nil
   end
+end
+
+class ForwardingAddress < ActiveRecord::Base
+  belongs_to :mailbox
 end
