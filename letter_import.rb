@@ -70,7 +70,7 @@ send_thread = Thread.new do
     end
 
     #Try to send letters, that we did not attempt to send in the last 15 minutes
-    letters.select{|l| l.send_attempts==0 or l.last_delivery_attempt_time == nil or l.last_delivery_attempt_time < Time.now - 900}.each do |letter|
+    letters.select{|l| (l.send_attempts==0 or l.last_delivery_attempt_time == nil or l.last_delivery_attempt_time < Time.now - 900) and l.send_attemps<=672}.each do |letter|
       begin
         log.info "Sending letter \"#{letter.subject}\" from #{letter.from} to #{letter.to}"
         mail = Mail.read_from_string(letter.raw)
