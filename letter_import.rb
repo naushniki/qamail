@@ -26,7 +26,7 @@ import_thread = Thread.new do
           end
         end
         raw = parsed_letter.without_attachments!.to_s + attachments_info
-        to_address = parsed_letter.header['X-Original-To'].value
+        to_address = Array(parsed_letter.header['X-Original-To'])[0].value
         mailbox = Mailbox.where('lower(address) = ?', to_address.downcase).first
         if mailbox == nil
           log.info("Mailbox not found in the database: #{to_address}. This letter was not imported. Deleting file. #{file}")
