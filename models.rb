@@ -30,5 +30,8 @@ class OutgoingLetter < ActiveRecord::Base
 end
 
 class ForwardingAddress < ActiveRecord::Base
+  email_regex = %r{([\w\d\-\.]+)@{1}(([\w\d\-]{1,67})|([\w\d\-]+\.[\w\d\-]{1,67}))\.(([a-zA-Z\d]{2,4})(\.[a-zA-Z\d]{2})?)}
   belongs_to :mailbox
+  validates_format_of :address, :with => email_regex
+  validates :address, uniqueness: { scope: :mailbox_id } , :case_sensitive => false
 end
