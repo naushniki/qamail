@@ -1,5 +1,5 @@
 module ExtraMailTools
-  
+
   def detect_part_encoding(part)
     begin
       tags = part.content_type.split(' ')
@@ -16,7 +16,7 @@ module ExtraMailTools
     end
     return nil
   end
-  
+
   alias_method :detect_letter_encoding, :detect_part_encoding
 
   def parse_letter(letter)
@@ -27,7 +27,7 @@ module ExtraMailTools
       encoding=detect_letter_encoding(letter)
       if encoding==nil
         encoding='utf-8' #If we cannot detect encoding, we assume it's UTF-8
-      end  
+      end
       if letter.content_type.include? 'text/html'
         parsed_letter[:html]=letter.body.decoded
         parsed_letter[:html].force_encoding encoding
@@ -36,7 +36,7 @@ module ExtraMailTools
         parsed_letter[:plain_text].force_encoding encoding
       end
     else
-      letter.parts.each do |part|
+      [letter.text_part, letter.html_part].each do |part|
         encoding=detect_part_encoding(part)
         if encoding==nil
           encoding='utf-8' #If we cannot detect encoding, we assume it's UTF-8
