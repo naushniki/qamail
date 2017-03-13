@@ -8,6 +8,23 @@ pidfile.write(Process.pid)
 pidfile.close
 log = Logger.new ($settings['app_root_directory'] + "/log/import.log")
 
+def forward_letter(letter, log)
+  letter.mailbox.forwarding_addresses.each do |address|
+    log.info("Forwarding letter to #{address.address}")
+    forwarded_letter = OutgoingLetter.new
+    parsed_letter = Mail.read_from_string(letter.raw)
+    parsed_letter.to = address.address
+    forwarded_letter.raw = parsed_letter.to_s
+    forwarded_letter.mailbox = letter.mailbox
+    forwarded_letter.from = letter.mailbox.address
+    forwarded_letter.to = address.address
+    forwarded_letter.is_forwarded = true
+    forwarded_letter.subject = parsed_letter.subject
+    forwarded_letter.written_at = Time.now
+    forwarded_letter.save
+  end
+end
+
 import_thread = Thread.new do
   dir = $settings['maildir'] + "/new"
   Dir.chdir(dir)
@@ -55,6 +72,12 @@ import_thread = Thread.new do
         log.info("Marking file #{file} as .bad")
         File.rename(file, file+".bad")
       end
+      begin        
+        forward_letter(letter, log)
+      rescue Exception => e
+        log.error("Failed to forward letter : #{e.message}")
+      end
+
     end
     sleep(0.1)
   end
@@ -70,9 +93,8 @@ send_thread = Thread.new do
     end
 
     #Try to send letters, that we did not attempt to send in the last 15 minutes
-    letters.select{|l| (l.send_attempts==0 or l.last_delivery_attempt_time == nil or l.last_delivery_attempt_time < Time.now - 900) and l.send_attemps<=672}.each do |letter|
+    letters.select{|l| (l.send_attempts==0 or l.last_delivery_attempt_time == nil or l.last_delivery_attempt_time < Time.now - 900) and l.send_attempts<=672}.each do |letter|
       begin
-        log.info "Sending letter \"#{letter.subject}\" from #{letter.from} to #{letter.to}"
         mail = Mail.read_from_string(letter.raw)
         mail.delivery_method :sendmail
         mail.deliver
