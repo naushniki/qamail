@@ -24,8 +24,8 @@ class OutgoingLetter < ActiveRecord::Base
   attr_accessor :send_attempts
   attr_accessor :last_delivery_attempt_time
   after_initialize do
-    send_attempts=0
-    last_delivery_attempt_time=nil
+    self.send_attempts=0
+    self.last_delivery_attempt_time=nil
   end
 end
 
