@@ -5,7 +5,7 @@ sanitize_custom_config = Sanitize::Config.merge(Sanitize::Config::RELAXED,
                                                  :add_attributes =>  {'a' => {'target' => '_blank'}}})
 
 put '/api/create_session' do
-  @session = create_session
+  @session = create_session(request)
   create_mailbox(@session)
   builder :show_session
 end
@@ -55,7 +55,7 @@ get '/api/show_mailbox_content' do
 end
 
 get '/api/show_letter' do
-  user_session.mailboxes.where(:address => params[:address]).first.letters.where(:id => params[:letter_id]).first
+  @letter = user_session.mailboxes.where(:address => params[:address]).first.letters.where(:id => params[:letter_id]).first
   cache_control :private, :must_revalidate, :max_age => 31536000
   etag Digest::SHA1.hexdigest(@letter.raw)
   builder :show_letter

@@ -1,0 +1,187 @@
+{
+	"info": {
+		"_postman_id": "76c2b8c5-0d4f-4a7a-b551-ff4f5258aef5",
+		"name": "QAMail",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "create session",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{baseurl}}/api/create_session",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"api",
+						"create_session"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "list mailboxes",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{baseurl}}/api/list_mailboxes?session_key=slzWsdom1ZSlbcFf6KrwkyVb",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"api",
+						"list_mailboxes"
+					],
+					"query": [
+						{
+							"key": "session_key",
+							"value": "slzWsdom1ZSlbcFf6KrwkyVb"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "show mailbox content",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{baseurl}}/api/show_mailbox_content?session_key={{session_key}}&address=vg6dobp@qamail.ala.se",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"api",
+						"show_mailbox_content"
+					],
+					"query": [
+						{
+							"key": "session_key",
+							"value": "{{session_key}}"
+						},
+						{
+							"key": "address",
+							"value": "vg6dobp@qamail.ala.se"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create mailbox",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{baseurl}}/api/create_mailbox?session_key={{session_key}}",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"api",
+						"create_mailbox"
+					],
+					"query": [
+						{
+							"key": "session_key",
+							"value": "{{session_key}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "show letter",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{baseurl}}/api/show_letter?session_key={{session_key}}&address=vg6dobp@qamail.ala.se&letter_id=49883",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"api",
+						"show_letter"
+					],
+					"query": [
+						{
+							"key": "session_key",
+							"value": "{{session_key}}"
+						},
+						{
+							"key": "address",
+							"value": "vg6dobp@qamail.ala.se"
+						},
+						{
+							"key": "letter_id",
+							"value": "49883"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "empty mailbox",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{baseurl}}/api/empty_mailbox?session_key={{session_key}}&address=vg6dobp@qamail.ala.se",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"api",
+						"empty_mailbox"
+					],
+					"query": [
+						{
+							"key": "session_key",
+							"value": "{{session_key}}"
+						},
+						{
+							"key": "address",
+							"value": "vg6dobp@qamail.ala.se"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
