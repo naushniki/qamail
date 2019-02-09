@@ -335,3 +335,55 @@ DELETE /api/empty_mailbox?session_key=Ry1Nc1wehF99t6y6DRQ8v8Uc&address=5y7yuva@q
 * **Sample Response:**
 
 Response contains no body.
+
+**JSON**
+----
+QA Mail API supports JSON an XML serialization. Examples above show usage of XML. To get JSON, simply add a path parameter format=json to your query.
+
+* **Sample Request:**
+```
+GET /api/list_mailboxes?session_key=G3nfwoElCc33f8ZHXEJgWflA&format=json HTTP/1.1
+```
+
+* **Sample Response:**
+
+```
+{
+    "session": {
+        "session_key": "G3nfwoElCc33f8ZHXEJgWflA",
+        "mailboxes": [
+            {
+                "address": "jco24sa@qamail.ala.se"
+            },
+            {
+                "address": "v9i56eg@qamail.ala.se"
+            },
+            {
+                "address": "c56tvej@qamail.ala.se"
+            },
+            {
+                "address": "492xo6b@qamail.ala.se"
+            },
+            {
+                "address": "d2syc8m@qamail.ala.se"
+            },
+            {
+                "address": "o8cgb97@qamail.ala.se"
+            },
+            {
+                "address": "pjegl1k@qamail.ala.se"
+            },
+            {
+                "address": "vg6dobp@qamail.ala.se"
+            },
+            {
+                "address": "ln1zpci@qamail.ala.se"
+            },
+            {
+                "address": "8i2qfnp@qamail.ala.se"
+            }
+        ]
+    }
+}
+
+```
