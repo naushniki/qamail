@@ -17,10 +17,14 @@ namespace :db do
     )
 
     ActiveRecord::Base.connection.create_database($settings['DB_name'])
-    
-    require './base.rb'
-    require './db/schema.rb'
-    require './db/seeds.rb'
+    end
+
+  namespace :schema do
+    task :load do
+      require './base.rb'
+      require './db/schema.rb'
+      require './db/seeds.rb'
+    end
   end
 
   task :migrate do
@@ -29,7 +33,9 @@ namespace :db do
     require './base.rb'
     ActiveRecord::Base.logger = Logger.new(STDOUT)
     ActiveRecord::Migration.verbose = true
-    ActiveRecord::Migrator.migrate("db/migrations")
+#    ActiveRecord::Migrator.migrations("db/migrations")
+    migrations = ActiveRecord::Migration.new.migration_context.migrations
+    ActiveRecord::Migrator.new(:up, migrations, nil).migrate   
   end
 
 end

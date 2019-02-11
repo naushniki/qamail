@@ -1,4 +1,4 @@
-class AddOutgoingLetters < ActiveRecord::Migration
+class AddOutgoingLetters < ActiveRecord::Migration[4.2]
   def change
     create_table "outgoing_letters", force: true do |t|
       t.integer "mailbox_id"

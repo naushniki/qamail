@@ -37,6 +37,7 @@ bundle install
 * Create the DB
 ```
 rake db:create
+rake db:schema:load
 rake db:migrate
 ```
 * Start the importer:
