@@ -11,15 +11,38 @@ http://qamail.ala.se
 To Do List
 ------------
 
-* Make the installation process simplier
 * Asynchronous notifications about new messages
-* Message forwarding / replying
-* Properly display multipart e-mails.
+* Message forwarding to custom addresses
 * Use proper HTTP return codes for error handling in API
 
-Installation
+Preparing for installation
 ------------
-* Configure the mail delivery agent.
+* You should bind a domain name to the IP address of your server. You don't need an MX DNS record, a simple A record is sufficient. If you don't have a domain name, you can get one for free here: http://freedns.afraid.org/
+
+Installation via Docker
+------------
+The easiest way to run QA Mail is to use docker-compose. To do so follow these steps:
+* QA Mail docker set up relies on a dedicated SMTP server. Most Linux distros come with a preconfigured SMTP server. Therefore, before running QA Mail, you must stop or uninstall your existing mail server. If you are using debian, this command will be sufficient:
+```
+systemctl stop exim4 && systemctl disable exim4
+```
+* Create a file named ".env" in the directory you placed the contents of this repository. Define the hostname variable in this file:
+```
+HOSTNAME=PLACE_YOUR_DOMAIN_NAME_HERE
+```
+* Build docker images. This may take a while
+```
+docker-compose build
+```
+* Start the application
+```
+docker-compose up -d
+```
+* Try to open QA Mail in browser to check everything works fine.  
+
+Manual installation
+------------
+* Configure the mail delivery agent.  
 QA mail needs an external mail delivery agent (MDA). The MDA must be configured so that messages to any address on a specific domain will go into one maildir. Than you should point QA Mail to this Maildir by specifying it in settings.yml.
 If you wish yo use Postfix, its configuration is described in the section "How to configure Postfix to work with QA Mail".
 * Install postgresql. Create a user, give this user privilage to create databases.
@@ -54,7 +77,6 @@ How to configure Postfix to work with QA Mail
 ------------
 
 This manual will help you configure Postfix to work with QA Mail on Debian 7 (should also work for Ubuntu and other debian-based Linux distros).
-First, you should tie your domain name to the IP address of your server. You don't need an MX DNS record, a simple A record is sufficient. If you don't have a domain name, you can get one for free here: http://freedns.afraid.org/
 
 * Install Postfix
 ```
@@ -67,15 +89,11 @@ Enter your domain.
 ```
 postconf -e "home_mailbox = Maildir/"
 postconf -e "mailbox_command = "
-```
-Edit file /etc/postfix/main.cf
-Add or edit the following lines:
-```
-myhostname = YOUR_DOMAIN_NAME
-myorigin = YOUR_DOMAIN_NAME
-mydestination = localhost.localdomain, localhost, YOUR_DOMAIN_NAME
-relay_domains = YOUR_DOMAIN_NAME
-virtual_alias_maps = pcre:/etc/postfix/wildcard.pcre
+postconf -e "myhostname = YOUR_DOMAIN_NAME"
+postconf -e "myorigin = YOUR_DOMAIN_NAME"
+postconf -e "mydestination = localhost.localdomain, localhost, YOUR_DOMAIN_NAME"
+postconf -e "relay_domains = YOUR_DOMAIN_NAME"
+postconf -e "virtual_alias_maps = pcre:/etc/postfix/wildcard.pcre"
 ```
 
 * Configure address rewriting
