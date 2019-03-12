@@ -1,9 +1,10 @@
-app_root_directory: root_directory
-maildir: mail directory
-domain: your_domain
-DB_host: '127.0.0.1'
-DB_username: db_user
-DB_password: db_password
-DB_name: db_name
+app_root_directory: /home/app/qamail
+maildir: /home/app/Maildir/
+domain: HOSTNAME_PLACEHOLDER
+outgoing_mail_delivery_method: sendmail
+DB_host: postgres
+DB_username: qamail
+DB_password: qamail
+DB_name: qamail
 DB_encoding: utf8
 async_notifications: off

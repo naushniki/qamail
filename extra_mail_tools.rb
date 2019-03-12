@@ -27,7 +27,7 @@ end
         parsed_letter[:plain_text].force_encoding encoding
       end
     else
-      [letter.text_part, letter.html_part].each do |part|
+	[letter.text_part, letter.html_part].select { |part| part!=nil }.each do |part|
         encoding=detect_part_encoding(part)
         if encoding==nil
           encoding='utf-8' #If we cannot detect encoding, we assume it's UTF-8

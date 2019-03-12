@@ -226,6 +226,7 @@ post '/send_reply' do
   end
 
   letter_file = Mail.new(
+    :from => (params[:senders_name].to_s + ' <' + mailbox.address + '>'),
     :sender => (params[:senders_name].to_s + ' <' + mailbox.address + '>'),
     :to => params[:to],
     :CC => params[:CC],

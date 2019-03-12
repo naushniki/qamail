@@ -1,3 +1,4 @@
+ENV['SINATRA_ACTIVESUPPORT_WARNING'] = 'false'
 require 'sinatra'
 require 'sinatra/activerecord'
 require 'yaml'
@@ -9,7 +10,7 @@ class QAMail < Sinatra::Base
 end
 
 $settings = YAML.load_file("settings.yml")
-
+ActiveRecord::Base.logger = nil
 ActiveRecord::Base.establish_connection(
   :adapter  => 'postgresql',
   :host     => $settings['DB_host'],

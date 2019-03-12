@@ -1,12 +1,64 @@
 require './base.rb'
 
-system ("kill -9 $(cat #{($settings['app_root_directory'] + "/letter_import.pid")})")
-unless ARGV.include?('--fg') then Process.daemon end
+def forefround_mode
+  return ARGV.include?('--fg')
+end
+
+def docker
+  return ARGV.include?('--docker')
+end
+
+if docker
+  puts "Letter importer has started in docker compatibility mode"
+  STDOUT.sync = true
+  log = Logger.new STDOUT
+elsif foreground_mode
+  puts "Letter importer has started in foreground mode"
+  log = Logger.new STDOUT
+else
+  puts "Letter importer is daemonizing"
+  log = Logger.new ($settings['app_root_directory'] + "/log/import.log")
+  Process.daemon
+end
+
+def kill_existing_process
+    f = File.open("letter_import.pid", "r")
+  begin
+    pid = f.readline
+    f.close
+  rescue EOFError
+    f.close
+    return
+  end
+
+  if pid.to_i == Process.pid
+    return
+  else
+    log.info("Killing process " + pid)
+    system ("kill -9 " + pid) 
+  end
+end
+
+def delivery_settings
+  if $settings["outgoing_mail_delivery_method"] == "smtp"
+    options = {
+      :address => $settings["smtp_server_hostname"],
+      :port => $settings["smtp_port"],
+      :domain => $settings["domain"],
+      :authentification => nil,
+      :enable_starttls_auto => false
+    }
+    return :smtp, options
+  else
+    return $settings["outgoing_mail_delivery_method"], nil
+  end     
+end
+
+kill_existing_process
 pidfile = File.new(($settings['app_root_directory'] + "/letter_import.pid"),  "w")
 pidfile.truncate(0)
 pidfile.write(Process.pid)
 pidfile.close
-log = Logger.new ($settings['app_root_directory'] + "/log/import.log")
 
 def forward_letter(letter, log)
   letter.mailbox.forwarding_addresses.each do |address|
@@ -96,7 +148,8 @@ send_thread = Thread.new do
     letters.select{|l| (l.send_attempts==0 or l.last_delivery_attempt_time == nil or l.last_delivery_attempt_time < Time.now - 900) and l.send_attempts<=672}.each do |letter|
       begin
         mail = Mail.read_from_string(letter.raw)
-        mail.delivery_method :sendmail
+	method, options = delivery_settings 
+        mail.delivery_method(method, options)
         mail.deliver
         letter.sent_at = Time.now
         letter.save

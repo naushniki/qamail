@@ -9,3 +9,4 @@ puma.sh
 puma_st.sh
 start.sh
 *.orig
+.env

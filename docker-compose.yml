@@ -1,0 +1,50 @@
+version: '3.1'
+
+services:
+
+  postgres:
+    image: postgres:9.4.20
+    restart: always
+    environment:
+      POSTGRES_USER: qamail      
+      POSTGRES_PASSWORD: qamail
+    ports:
+      - 5432:5432
+
+  web:
+    build:
+      context: .
+      dockerfile: ./docker/web/Dockerfile
+    image: qamail-web 
+    restart: always
+    ports:
+      - 80:80
+    environment:
+      - hostname=$HOSTNAME
+
+  importer:
+    build:
+      context: .
+      dockerfile: ./docker/importer/Dockerfile
+    image: qamail-importer
+    restart: always
+    environment:
+      - hostname=$HOSTNAME
+    volumes:
+      - maildir:/home/app/Maildir
+
+  postfix:
+    build:
+      context: .
+      dockerfile: ./docker/postfix/Dockerfile
+    image: qamail-postfix
+    restart: always
+    environment:
+      - hostname=$HOSTNAME
+    volumes:    
+      - maildir:/home/qamail/Maildir
+    ports:
+      - "25:25"
+
+volumes:
+  maildir:
