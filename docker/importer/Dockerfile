@@ -10,7 +10,7 @@ RUN mkdir /home/app/Maildir
 RUN apt-get update
 
 COPY . /home/app/qamail
-COPY ./docker/importer/settings.yml /home/app/qamail
+COPY ./docker/importer/settings.yml.example /home/app/qamail/settings.yml
 COPY ./docker/importer/entrypoint.sh /home/app/qamail
 RUN chmod +x /home/app/qamail/entrypoint.sh
 RUN chown -R app:app /home/app

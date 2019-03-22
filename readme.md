@@ -6,7 +6,7 @@ QA Mail can be used both for manual testing via a web user interface and also fo
 Live demo
 ------------
 
-http://qamail.ala.se
+http://qamail.ttrss.net
 
 To Do List
 ------------
@@ -17,7 +17,7 @@ To Do List
 
 Preparing for installation
 ------------
-* You should bind a domain name to the IP address of your server. You don't need an MX DNS record, a simple A record is sufficient. If you don't have a domain name, you can get one for free here: http://freedns.afraid.org/
+* You should bind a domain name to the IP address of your server.  
 
 Installation via Docker
 ------------
@@ -50,8 +50,8 @@ If you wish yo use Postfix, its configuration is described in the section "How t
 *  Install [rvm](https://rvm.io/rvm/install) (if you don't already have it)
 *  Install fresh ruby
 ```
-rvm install 2.2.2
-rvm --default use 2.2.2
+rvm install 2.3.8
+rvm --default use 2.3.8
 ```
 *  Install libraries
 ```

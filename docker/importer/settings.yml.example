@@ -1,0 +1,12 @@
+app_root_directory: /home/app/qamail
+maildir: /home/app/Maildir/
+domain: HOSTNAME_PLACEHOLDER
+outgoing_mail_delivery_method: smtp
+smtp_port: 25
+smtp_server_hostname: postfix
+DB_host: postgres
+DB_username: qamail
+DB_password: qamail
+DB_name: qamail
+DB_encoding: utf8
+async_notifications: off
